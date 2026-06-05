@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Generator — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">▣</div>
+    <h1 class="tool-page-title">QR Code Generator</h1>
+    <p class="tool-page-desc">Generate a QR code for any URL, text, email or phone number instantly.</p>
+  </div>
+  <div class="tool-page-body">
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">Enter Content</span>
+        <button class="toolbar-btn" id="btn-clear">Clear</button>
+      </div>
+      <textarea id="qr-input" class="tool-textarea" style="min-height:100px;" placeholder="Enter URL, text, email, phone..."></textarea>
+    </div>
+
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:20px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">SIZE</label>
+        <select class="tool-select" id="qr-size">
+          <option value="200">Small (200px)</option>
+          <option value="300" selected>Medium (300px)</option>
+          <option value="400">Large (400px)</option>
+          <option value="500">XL (500px)</option>
+        </select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">ERROR CORRECTION</label>
+        <select class="tool-select" id="qr-ecc">
+          <option value="L">Low (L)</option>
+          <option value="M" selected>Medium (M)</option>
+          <option value="Q">Quartile (Q)</option>
+          <option value="H">High (H)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-generate" style="padding:10px 28px;">Generate QR Code →</button>
+    </div>
+
+    <div id="qr-result" style="display:none;margin-top:24px;text-align:center;">
+      <div style="display:inline-block;background:white;padding:20px;border-radius:var(--r-lg);margin-bottom:20px;">
+        <img id="qr-img" src="" alt="QR Code" style="display:block;" />
+      </div>
+      <div class="btn-row" style="justify-content:center;">
+        <a id="btn-download" class="btn-primary" download="qrcode.png" style="padding:10px 24px;">⬇ Download PNG</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+document.getElementById('btn-generate').addEventListener('click', () => {
+  const text = document.getElementById('qr-input').value.trim();
+  if (!text) return;
+  const size = document.getElementById('qr-size').value;
+  const ecc  = document.getElementById('qr-ecc').value;
+  const url  = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&ecc=${ecc}&data=${encodeURIComponent(text)}`;
+  const img  = document.getElementById('qr-img');
+  img.src = url;
+  img.width = parseInt(size);
+  img.height = parseInt(size);
+  document.getElementById('btn-download').href = url;
+  document.getElementById('qr-result').style.display = 'block';
+});
+document.getElementById('btn-clear').addEventListener('click', () => {
+  document.getElementById('qr-input').value = '';
+  document.getElementById('qr-result').style.display = 'none';
+});
+</script>
+</body>
+</html>

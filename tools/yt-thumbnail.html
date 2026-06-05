@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Thumbnail Downloader — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">▶️</div>
+    <h1 class="tool-page-title">YouTube Thumbnail Downloader</h1>
+    <p class="tool-page-desc">Download YouTube video thumbnails in all available resolutions instantly.</p>
+  </div>
+  <div class="tool-page-body">
+    <div style="display:flex;gap:10px;margin-bottom:24px;">
+      <input type="text" id="yt-url" class="tool-input" style="flex:1;" placeholder="Paste YouTube video URL or ID..." />
+      <button class="btn-primary" id="btn-get" style="padding:10px 24px;">Get Thumbnails →</button>
+    </div>
+    <div id="status" style="margin-bottom:12px;"></div>
+    <div id="result" style="display:none;">
+      <div id="thumbs-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;"></div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+function extractId(input) {
+  const patterns=[/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,/^([a-zA-Z0-9_-]{11})$/];
+  for(const p of patterns){const m=input.match(p);if(m)return m[1];}
+  return null;
+}
+
+document.getElementById('btn-get').addEventListener('click',()=>{
+  const id=extractId(document.getElementById('yt-url').value.trim());
+  const st=document.getElementById('status');
+  if(!id){st.innerHTML='<span class="result-badge warn">✗ Invalid YouTube URL or ID</span>';return;}
+
+  const qualities=[
+    {label:'Max Resolution',key:'maxresdefault',size:'1280×720'},
+    {label:'High Quality',key:'hqdefault',size:'480×360'},
+    {label:'Medium Quality',key:'mqdefault',size:'320×180'},
+    {label:'Standard',key:'sddefault',size:'640×480'},
+  ];
+
+  document.getElementById('thumbs-grid').innerHTML=qualities.map(q=>{
+    const url=`https://img.youtube.com/vi/${id}/${q.key}.jpg`;
+    return `<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;">
+      <img src="${url}" style="width:100%;display:block;" onerror="this.parentElement.style.display='none'"/>
+      <div style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <div><div style="font-size:0.85rem;font-weight:500;">${q.label}</div><div style="font-size:0.72rem;color:var(--text3);">${q.size}</div></div>
+        <a href="${url}" download="thumb-${q.key}.jpg" class="toolbar-btn" style="color:var(--gold);border-color:var(--gold-dim);" target="_blank">⬇ Save</a>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('result').style.display='block';
+  st.innerHTML='<span class="result-badge success">✓ Thumbnails loaded</span>';
+});
+</script>
+</body>
+</html>

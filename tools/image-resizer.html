@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Resizer — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">↔️</div>
+    <h1 class="tool-page-title">Image Resizer</h1>
+    <p class="tool-page-desc">Resize any image to custom dimensions. Runs entirely in your browser — nothing uploaded.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Drop zone -->
+    <div id="drop-zone" style="border:2px dashed var(--border2);border-radius:var(--r-lg);padding:48px;text-align:center;cursor:pointer;transition:var(--transition);margin-bottom:20px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🖼️</div>
+      <p style="color:var(--text2);margin-bottom:8px;">Drop an image here or click to upload</p>
+      <p style="font-size:0.78rem;color:var(--text3);">PNG, JPG, WebP, GIF supported</p>
+      <input type="file" id="file-input" accept="image/*" style="display:none;" />
+    </div>
+
+    <div id="controls" style="display:none;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:16px;">
+        <div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:10px;">ORIGINAL</div>
+        <div id="orig-info" style="font-size:0.9rem;color:var(--text2);"></div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px;">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">WIDTH (px)</label>
+          <input type="number" id="new-width" class="tool-input" style="width:120px;" placeholder="Width" />
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">HEIGHT (px)</label>
+          <input type="number" id="new-height" class="tool-input" style="width:120px;" placeholder="Height" />
+        </div>
+        <label class="checkbox-item"><input type="checkbox" id="lock-ratio" checked> Lock aspect ratio</label>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        <span style="font-size:0.78rem;color:var(--text3);align-self:center;">Presets:</span>
+        <button class="toolbar-btn" data-w="1920" data-h="1080">1920×1080</button>
+        <button class="toolbar-btn" data-w="1280" data-h="720">1280×720</button>
+        <button class="toolbar-btn" data-w="800" data-h="600">800×600</button>
+        <button class="toolbar-btn" data-w="400" data-h="400">400×400</button>
+        <button class="toolbar-btn" data-w="200" data-h="200">200×200</button>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        <span style="font-size:0.78rem;color:var(--text3);align-self:center;">Format:</span>
+        <select class="tool-select" id="out-format">
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/png">PNG</option>
+          <option value="image/webp">WebP</option>
+        </select>
+        <select class="tool-select" id="out-quality">
+          <option value="1">Quality: 100%</option>
+          <option value="0.9" selected>Quality: 90%</option>
+          <option value="0.8">Quality: 80%</option>
+          <option value="0.7">Quality: 70%</option>
+          <option value="0.5">Quality: 50%</option>
+        </select>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-resize" style="padding:10px 28px;">Resize & Download →</button>
+        <button class="toolbar-btn" id="btn-reset">Reset</button>
+      </div>
+    </div>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+let origW, origH, img = new Image();
+
+const dropZone  = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const controls  = document.getElementById('controls');
+const wInput    = document.getElementById('new-width');
+const hInput    = document.getElementById('new-height');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--gold)'; });
+dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'var(--border2)'; });
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor='var(--border2)'; loadFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+function loadFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    img.onload = () => {
+      origW = img.width; origH = img.height;
+      wInput.value = origW; hInput.value = origH;
+      document.getElementById('orig-info').textContent = `${origW} × ${origH} px · ${(file.size/1024).toFixed(1)} KB · ${file.name}`;
+      controls.style.display = 'block';
+      dropZone.style.display = 'none';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+wInput.addEventListener('input', () => {
+  if (document.getElementById('lock-ratio').checked && origW)
+    hInput.value = Math.round(wInput.value * origH / origW);
+});
+hInput.addEventListener('input', () => {
+  if (document.getElementById('lock-ratio').checked && origH)
+    wInput.value = Math.round(hInput.value * origW / origH);
+});
+
+document.querySelectorAll('[data-w]').forEach(btn => {
+  btn.addEventListener('click', () => { wInput.value = btn.dataset.w; hInput.value = btn.dataset.h; });
+});
+
+document.getElementById('btn-resize').addEventListener('click', () => {
+  const w = parseInt(wInput.value), h = parseInt(hInput.value);
+  if (!w || !h) return;
+  const canvas = document.getElementById('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+  const fmt = document.getElementById('out-format').value;
+  const q   = parseFloat(document.getElementById('out-quality').value);
+  const ext = fmt.split('/')[1];
+  const a   = document.createElement('a');
+  a.download = `resized-${w}x${h}.${ext}`;
+  a.href = canvas.toDataURL(fmt, q);
+  a.click();
+});
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  controls.style.display = 'none';
+  dropZone.style.display = 'block';
+  fileInput.value = '';
+});
+</script>
+</body>
+</html>

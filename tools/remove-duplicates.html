@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remove Duplicate Lines — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🧹</div>
+    <h1 class="tool-page-title">Remove Duplicate Lines</h1>
+    <p class="tool-page-desc">Paste any list or dataset and instantly remove all duplicate lines.</p>
+  </div>
+  <div class="tool-page-body">
+    <div class="tool-two-col">
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono">Input</span>
+          <button class="toolbar-btn" id="btn-paste">Paste</button>
+          <button class="toolbar-btn" id="btn-clear">Clear</button>
+        </div>
+        <textarea id="main-input" class="tool-textarea" placeholder="Paste lines here, one per line..."></textarea>
+      </div>
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono" id="out-label">Output</span>
+          <button class="toolbar-btn" id="btn-copy">Copy</button>
+        </div>
+        <textarea id="output" class="tool-textarea" readonly placeholder="Result will appear here..."></textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+      <label class="checkbox-item"><input type="checkbox" id="ignore-case"> Ignore case</label>
+      <label class="checkbox-item"><input type="checkbox" id="trim-lines" checked> Trim whitespace</label>
+      <label class="checkbox-item"><input type="checkbox" id="remove-empty"> Remove empty lines</label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-run" style="padding:10px 28px;font-size:0.9rem;">Remove Duplicates →</button>
+    </div>
+    <div id="stats" style="margin-top:12px;font-size:0.85rem;color:var(--text3);font-family:var(--font-mono);"></div>
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>
+document.getElementById('btn-run').addEventListener('click', () => {
+  let lines = document.getElementById('main-input').value.split('\n');
+  const ignoreCase = document.getElementById('ignore-case').checked;
+  const trim       = document.getElementById('trim-lines').checked;
+  const removeEmpty= document.getElementById('remove-empty').checked;
+
+  if (trim) lines = lines.map(l => l.trim());
+  if (removeEmpty) lines = lines.filter(l => l !== '');
+
+  const seen = new Set();
+  const unique = lines.filter(l => {
+    const key = ignoreCase ? l.toLowerCase() : l;
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+
+  document.getElementById('output').value = unique.join('\n');
+  document.getElementById('out-label').textContent = `Output (${unique.length} lines)`;
+  document.getElementById('stats').textContent = `Total: ${lines.length} → Unique: ${unique.length} → Removed: ${lines.length - unique.length}`;
+});
+document.getElementById('btn-paste').addEventListener('click', async () => { document.getElementById('main-input').value = await navigator.clipboard.readText(); });
+document.getElementById('btn-clear').addEventListener('click', () => { document.getElementById('main-input').value = ''; document.getElementById('output').value = ''; document.getElementById('stats').textContent = ''; });
+document.getElementById('btn-copy').addEventListener('click', () => navigator.clipboard.writeText(document.getElementById('output').value));
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Generator — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">#️⃣</div>
+    <h1 class="tool-page-title">Hash Generator</h1>
+    <p class="tool-page-desc">Generate SHA-1, SHA-256 and SHA-512 cryptographic hashes from any text.</p>
+  </div>
+  <div class="tool-page-body">
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">Input Text</span>
+        <button class="toolbar-btn" id="btn-paste">Paste</button>
+        <button class="toolbar-btn" id="btn-clear">Clear</button>
+      </div>
+      <textarea id="main-input" class="tool-textarea" placeholder="Enter text to hash..."></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-hash" style="padding:10px 24px;">Generate Hashes →</button>
+    </div>
+
+    <div id="results" style="display:none;">
+      <div class="tool-section-card" style="margin-top:8px;">
+        <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">HASH RESULTS</span></div>
+        <div id="hash-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+async function hash(algo, text) {
+  const buf = await crypto.subtle.digest(algo, new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+document.getElementById('btn-hash').addEventListener('click', async () => {
+  const text = document.getElementById('main-input').value;
+  if (!text.trim()) return;
+  const algos = [['SHA-1','SHA-1'],['SHA-256','SHA-256'],['SHA-512','SHA-512']];
+  const results = await Promise.all(algos.map(([label, algo]) => hash(algo, text).then(h => ({label, h}))));
+  document.getElementById('hash-list').innerHTML = results.map(({label,h}) => `
+    <div style="margin-bottom:16px;">
+      <div style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:6px;">${label}</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <code style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text2);background:var(--bg3);padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--border);flex:1;word-break:break-all;">${h}</code>
+        <button class="toolbar-btn" onclick="navigator.clipboard.writeText('${h}')">Copy</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('results').style.display = 'block';
+});
+
+document.getElementById('btn-paste').addEventListener('click', async()=>{document.getElementById('main-input').value=await navigator.clipboard.readText();});
+document.getElementById('btn-clear').addEventListener('click', ()=>{document.getElementById('main-input').value='';document.getElementById('results').style.display='none';});
+</script>
+</body>
+</html>

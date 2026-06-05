@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text Sorter — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🔤</div>
+    <h1 class="tool-page-title">Text Sorter</h1>
+    <p class="tool-page-desc">Sort lines alphabetically, numerically, by length, or reverse them instantly.</p>
+  </div>
+  <div class="tool-page-body">
+    <div class="tool-two-col">
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono">Input</span>
+          <button class="toolbar-btn" id="btn-paste">Paste</button>
+          <button class="toolbar-btn" id="btn-clear">Clear</button>
+        </div>
+        <textarea id="main-input" class="tool-textarea" placeholder="Paste lines to sort, one per line..."></textarea>
+      </div>
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono" id="out-label">Output</span>
+          <button class="toolbar-btn" id="btn-copy">Copy</button>
+        </div>
+        <textarea id="output" class="tool-textarea" readonly placeholder="Sorted result appears here..."></textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+      <label class="checkbox-item"><input type="checkbox" id="ignore-case" checked> Ignore case</label>
+      <label class="checkbox-item"><input type="checkbox" id="remove-dupes"> Remove duplicates</label>
+      <label class="checkbox-item"><input type="checkbox" id="trim-lines" checked> Trim whitespace</label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" data-sort="az" style="padding:10px 20px;font-size:0.88rem;">A → Z</button>
+      <button class="btn-primary" data-sort="za" style="padding:10px 20px;font-size:0.88rem;">Z → A</button>
+      <button class="btn-primary" data-sort="num-asc" style="padding:10px 20px;font-size:0.88rem;">1 → 9</button>
+      <button class="btn-primary" data-sort="num-desc" style="padding:10px 20px;font-size:0.88rem;">9 → 1</button>
+      <button class="btn-primary" data-sort="len-asc" style="padding:10px 20px;font-size:0.88rem;">Shortest first</button>
+      <button class="btn-primary" data-sort="len-desc" style="padding:10px 20px;font-size:0.88rem;">Longest first</button>
+      <button class="btn-primary" data-sort="random" style="padding:10px 20px;font-size:0.88rem;">🔀 Shuffle</button>
+      <button class="btn-primary" data-sort="reverse" style="padding:10px 20px;font-size:0.88rem;">↕ Reverse</button>
+    </div>
+    <div id="stats" style="margin-top:12px;font-size:0.85rem;color:var(--text3);font-family:var(--font-mono);"></div>
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>
+function sort(type) {
+  let lines = document.getElementById('main-input').value.split('\n');
+  const ignoreCase  = document.getElementById('ignore-case').checked;
+  const removeDupes = document.getElementById('remove-dupes').checked;
+  const trim        = document.getElementById('trim-lines').checked;
+  if (trim) lines = lines.map(l => l.trim());
+  if (removeDupes) { const s=new Set(); lines=lines.filter(l=>{const k=ignoreCase?l.toLowerCase():l;if(s.has(k))return false;s.add(k);return true;}); }
+
+  const sorted = [...lines];
+  const cmp = (a,b) => (ignoreCase?a.toLowerCase():a).localeCompare(ignoreCase?b.toLowerCase():b);
+  if      (type==='az')       sorted.sort(cmp);
+  else if (type==='za')       sorted.sort((a,b)=>-cmp(a,b));
+  else if (type==='num-asc')  sorted.sort((a,b)=>parseFloat(a)-parseFloat(b));
+  else if (type==='num-desc') sorted.sort((a,b)=>parseFloat(b)-parseFloat(a));
+  else if (type==='len-asc')  sorted.sort((a,b)=>a.length-b.length);
+  else if (type==='len-desc') sorted.sort((a,b)=>b.length-a.length);
+  else if (type==='random')   sorted.sort(()=>Math.random()-0.5);
+  else if (type==='reverse')  sorted.reverse();
+
+  document.getElementById('output').value = sorted.join('\n');
+  document.getElementById('out-label').textContent = `Output (${sorted.length} lines)`;
+  document.getElementById('stats').textContent = `${lines.length} lines sorted`;
+}
+
+document.querySelectorAll('[data-sort]').forEach(btn => btn.addEventListener('click', () => sort(btn.dataset.sort)));
+document.getElementById('btn-paste').addEventListener('click', async () => { document.getElementById('main-input').value = await navigator.clipboard.readText(); });
+document.getElementById('btn-clear').addEventListener('click', () => { document.getElementById('main-input').value=''; document.getElementById('output').value=''; });
+document.getElementById('btn-copy').addEventListener('click', () => navigator.clipboard.writeText(document.getElementById('output').value));
+</script>
+</body>
+</html>

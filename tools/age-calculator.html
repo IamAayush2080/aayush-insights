@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Calculator — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🎂</div>
+    <h1 class="tool-page-title">Age Calculator</h1>
+    <p class="tool-page-desc">Calculate your exact age in years, months, days, hours and more.</p>
+  </div>
+  <div class="tool-page-body">
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-bottom:24px;">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">DATE OF BIRTH</label>
+          <input type="date" id="dob" class="tool-input" />
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">CALCULATE AGE ON</label>
+          <input type="date" id="target-date" class="tool-input" />
+        </div>
+        <button class="btn-primary" id="btn-calc" style="padding:10px 24px;">Calculate →</button>
+      </div>
+    </div>
+
+    <div id="result" style="display:none;">
+      <div class="stat-row" id="stat-row" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));">
+        <div class="stat-box"><div class="stat-box-num" id="r-years">0</div><div class="stat-box-label">Years</div></div>
+        <div class="stat-box"><div class="stat-box-num" id="r-months">0</div><div class="stat-box-label">Months</div></div>
+        <div class="stat-box"><div class="stat-box-num" id="r-days">0</div><div class="stat-box-label">Days</div></div>
+        <div class="stat-box"><div class="stat-box-num" id="r-hours">0</div><div class="stat-box-label">Hours</div></div>
+        <div class="stat-box"><div class="stat-box-num" id="r-mins">0</div><div class="stat-box-label">Minutes</div></div>
+      </div>
+      <div class="tool-section-card" style="margin-top:16px;">
+        <div id="extra-info" style="font-size:0.9rem;color:var(--text2);line-height:2;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+// Set today as default target
+const today = new Date();
+document.getElementById('target-date').value = today.toISOString().split('T')[0];
+
+document.getElementById('btn-calc').addEventListener('click', () => {
+  const dob = new Date(document.getElementById('dob').value);
+  const target = new Date(document.getElementById('target-date').value);
+  if (!dob || isNaN(dob)) return;
+
+  let years = target.getFullYear() - dob.getFullYear();
+  let months = target.getMonth() - dob.getMonth();
+  let days = target.getDate() - dob.getDate();
+
+  if (days < 0) { months--; days += new Date(target.getFullYear(), target.getMonth(), 0).getDate(); }
+  if (months < 0) { years--; months += 12; }
+
+  const totalDays = Math.floor((target - dob) / (1000*60*60*24));
+  const totalHours = totalDays * 24;
+  const totalMins = totalHours * 60;
+  const totalMonths = years*12 + months;
+  const totalWeeks = Math.floor(totalDays/7);
+  const nextBday = new Date(target.getFullYear(), dob.getMonth(), dob.getDate());
+  if (nextBday < target) nextBday.setFullYear(nextBday.getFullYear()+1);
+  const daysToNext = Math.floor((nextBday - target)/(1000*60*60*24));
+
+  document.getElementById('r-years').textContent  = years.toLocaleString();
+  document.getElementById('r-months').textContent = months;
+  document.getElementById('r-days').textContent   = days;
+  document.getElementById('r-hours').textContent  = totalHours.toLocaleString();
+  document.getElementById('r-mins').textContent   = totalMins.toLocaleString();
+
+  document.getElementById('extra-info').innerHTML = `
+    <div>📅 Total days lived: <strong style="color:var(--gold)">${totalDays.toLocaleString()}</strong></div>
+    <div>📅 Total weeks: <strong style="color:var(--gold)">${totalWeeks.toLocaleString()}</strong></div>
+    <div>📅 Total months: <strong style="color:var(--gold)">${totalMonths.toLocaleString()}</strong></div>
+    <div>🎂 Days until next birthday: <strong style="color:var(--gold)">${daysToNext === 0 ? '🎉 Today!' : daysToNext + ' days'}</strong></div>
+    <div>🌟 Day of week you were born: <strong style="color:var(--gold)">${dob.toLocaleDateString('en-US',{weekday:'long'})}</strong></div>
+  `;
+  document.getElementById('result').style.display = 'block';
+});
+</script>
+</body>
+</html>

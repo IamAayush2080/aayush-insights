@@ -1,0 +1,154 @@
+.tools-hero {
+  padding: 120px 5% 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+.tools-hero-title {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 900;
+  line-height: 1.0;
+  margin: 12px 0 16px;
+}
+.tools-hero-sub {
+  font-size: 1rem;
+  color: var(--text2);
+  max-width: 520px;
+  margin: 0 auto 36px;
+}
+
+/* Search */
+.tools-search-wrap {
+  display: flex; align-items: center; gap: 12px;
+  max-width: 500px; margin: 0 auto 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-md);
+  padding: 10px 16px;
+  transition: var(--transition);
+}
+.tools-search-wrap:focus-within {
+  border-color: var(--gold-dim);
+  box-shadow: 0 0 0 3px var(--gold-glow);
+}
+.tools-search-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-family: var(--font-body); font-size: 0.95rem;
+  color: var(--text);
+}
+.tools-search-input::placeholder { color: var(--text3); }
+.search-clear {
+  font-size: 0.75rem; color: var(--text3);
+  cursor: pointer; padding: 2px 6px; border-radius: 4px;
+  transition: var(--transition);
+}
+.search-clear:hover { color: var(--text); background: var(--border); }
+
+/* Filter buttons */
+.tools-filter {
+  display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+}
+.filter-btn {
+  font-family: var(--font-body);
+  font-size: 0.82rem; font-weight: 400;
+  color: var(--text2);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 7px 16px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.filter-btn:hover { color: var(--text); border-color: var(--border2); }
+.filter-btn.active {
+  background: var(--gold-dim);
+  color: var(--gold-lt);
+  border-color: var(--gold-dim);
+}
+
+/* Tools container */
+.tools-container {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 5% 80px;
+}
+
+/* Section labels */
+.tool-section-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  text-transform: uppercase;
+  padding: 32px 0 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+  grid-column: 1 / -1;
+}
+
+/* Tools grid */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+/* Tool card */
+.tool-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 20px;
+  display: flex; align-items: center; gap: 16px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.tool-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--gold-glow), transparent 60%);
+  opacity: 0; transition: var(--transition);
+}
+.tool-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.tool-card:hover::before { opacity: 1; }
+
+.tool-card-icon {
+  font-size: 1.5rem;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg3);
+  border-radius: var(--r-sm);
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--gold);
+  border: 1px solid var(--border);
+}
+.tool-card-body { flex: 1; min-width: 0; }
+.tool-card-name {
+  font-size: 0.9rem; font-weight: 500;
+  color: var(--text); margin-bottom: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tool-card-desc { font-size: 0.78rem; color: var(--text3); line-height: 1.4; }
+.tool-card-btn {
+  font-size: 0.78rem; font-weight: 500;
+  color: var(--gold); white-space: nowrap;
+  padding: 6px 12px;
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--r-sm);
+  transition: var(--transition);
+  position: relative; z-index: 1;
+}
+.tool-card-btn:hover {
+  background: var(--gold-dim);
+  color: var(--gold-lt);
+}
+
+/* Hide animation */
+.tool-card.hidden, .tool-section-label.hidden { display: none; }
+
+@media (max-width: 600px) {
+  .tools-grid { grid-template-columns: 1fr; }
+  .tool-card-desc { display: none; }
+}

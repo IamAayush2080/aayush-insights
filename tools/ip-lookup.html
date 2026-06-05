@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IP Address Lookup — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">📡</div>
+    <h1 class="tool-page-title">IP Address Lookup</h1>
+    <p class="tool-page-desc">Find your IP address and location details, or look up any IP.</p>
+  </div>
+  <div class="tool-page-body">
+    <div style="display:flex;gap:10px;margin-bottom:24px;">
+      <input type="text" id="ip-input" class="tool-input" style="flex:1;" placeholder="Enter IP address or leave blank for your IP..." />
+      <button class="btn-primary" id="btn-lookup" style="padding:10px 24px;">Lookup →</button>
+      <button class="toolbar-btn" id="btn-my-ip">My IP</button>
+    </div>
+    <div id="status" style="margin-bottom:12px;"></div>
+    <div id="result" style="display:none;">
+      <div class="stat-row" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+        <div class="stat-box"><div class="stat-box-num" id="r-ip" style="font-size:1rem;">—</div><div class="stat-box-label">IP Address</div></div>
+        <div class="stat-box"><div class="stat-box-num" id="r-country" style="font-size:1rem;">—</div><div class="stat-box-label">Country</div></div>
+        <div class="stat-box"><div class="stat-box-num" id="r-city" style="font-size:1rem;">—</div><div class="stat-box-label">City</div></div>
+        <div class="stat-box"><div class="stat-box-num" id="r-isp" style="font-size:0.85rem;">—</div><div class="stat-box-label">ISP</div></div>
+      </div>
+      <div class="tool-section-card" style="margin-top:16px;">
+        <div id="extra-info" style="font-size:0.9rem;color:var(--text2);line-height:2.2;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+async function lookup(ip='') {
+  const st=document.getElementById('status');
+  st.innerHTML='<span class="result-badge info">⏳ Looking up...</span>';
+  try {
+    const url=ip?`https://ipapi.co/${ip}/json/`:'https://ipapi.co/json/';
+    const res=await fetch(url);
+    const d=await res.json();
+    if(d.error){st.innerHTML=`<span class="result-badge warn">✗ ${d.reason||'Invalid IP'}</span>`;return;}
+    document.getElementById('r-ip').textContent=d.ip;
+    document.getElementById('r-country').textContent=`${d.country_name} ${d.country_code}`;
+    document.getElementById('r-city').textContent=d.city||'—';
+    document.getElementById('r-isp').textContent=d.org||'—';
+    document.getElementById('extra-info').innerHTML=`
+      <div>🌍 Region: <strong style="color:var(--gold)">${d.region||'—'}</strong></div>
+      <div>📮 Postal: <strong style="color:var(--gold)">${d.postal||'—'}</strong></div>
+      <div>🕐 Timezone: <strong style="color:var(--gold)">${d.timezone||'—'}</strong></div>
+      <div>📍 Coordinates: <strong style="color:var(--gold)">${d.latitude}, ${d.longitude}</strong></div>
+      <div>🏢 ASN: <strong style="color:var(--gold)">${d.asn||'—'}</strong></div>
+    `;
+    document.getElementById('result').style.display='block';
+    st.innerHTML='<span class="result-badge success">✓ IP information found</span>';
+  } catch(e){st.innerHTML='<span class="result-badge warn">✗ Error fetching IP data</span>';}
+}
+
+document.getElementById('btn-lookup').addEventListener('click',()=>lookup(document.getElementById('ip-input').value.trim()));
+document.getElementById('btn-my-ip').addEventListener('click',()=>{document.getElementById('ip-input').value='';lookup();});
+lookup();
+</script>
+</body>
+</html>
