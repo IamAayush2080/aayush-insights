@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Formatter — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">{ }</div>
+    <h1 class="tool-page-title">JSON Formatter</h1>
+    <p class="tool-page-desc">Format, validate, minify and beautify JSON data instantly.</p>
+  </div>
+  <div class="tool-page-body">
+    <div id="status-bar" style="margin-bottom:12px;"></div>
+
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">JSON Input</span>
+        <button class="toolbar-btn" id="btn-paste">Paste</button>
+        <button class="toolbar-btn" id="btn-clear">Clear</button>
+        <button class="toolbar-btn" id="btn-sample">Sample</button>
+      </div>
+      <textarea id="main-input" class="tool-textarea" style="font-family:var(--font-mono);font-size:0.85rem;" placeholder='Paste your JSON here, e.g. {"name":"Aayush","num":7539}'></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-format" style="padding:10px 24px;">✦ Format & Validate</button>
+      <button class="toolbar-btn primary" id="btn-minify">Minify</button>
+      <button class="toolbar-btn primary" id="btn-copy">Copy Output</button>
+      <select class="tool-select" id="indent-select">
+        <option value="2">2 spaces</option>
+        <option value="4">4 spaces</option>
+        <option value="tab">Tab</option>
+      </select>
+    </div>
+
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">Output</span>
+      </div>
+      <textarea id="output" class="tool-textarea" readonly style="font-family:var(--font-mono);font-size:0.85rem;" placeholder="Formatted JSON appears here..."></textarea>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>
+const input  = document.getElementById('main-input');
+const output = document.getElementById('output');
+const status = document.getElementById('status-bar');
+
+function setStatus(ok, msg) {
+  status.innerHTML = `<span class="result-badge ${ok?'success':'warn'}">${ok?'✓':'✗'} ${msg}</span>`;
+}
+
+document.getElementById('btn-format').addEventListener('click', () => {
+  try {
+    const indent = document.getElementById('indent-select').value;
+    const parsed = JSON.parse(input.value);
+    output.value = JSON.stringify(parsed, null, indent === 'tab' ? '\t' : parseInt(indent));
+    setStatus(true, 'Valid JSON — formatted successfully');
+  } catch(e) {
+    output.value = '';
+    setStatus(false, 'Invalid JSON: ' + e.message);
+  }
+});
+
+document.getElementById('btn-minify').addEventListener('click', () => {
+  try {
+    output.value = JSON.stringify(JSON.parse(input.value));
+    setStatus(true, 'Minified successfully');
+  } catch(e) { setStatus(false, 'Invalid JSON: ' + e.message); }
+});
+
+const SAMPLE = `{"site":"Aayush Insights","number":7539,"features":["tools","blog","thoughts"],"free":true,"author":{"name":"Aayush Kurmi","interest":["guitar","cybersecurity","universe"]}}`;
+document.getElementById('btn-sample').addEventListener('click', () => { input.value = SAMPLE; });
+document.getElementById('btn-paste').addEventListener('click', async () => { input.value = await navigator.clipboard.readText(); });
+document.getElementById('btn-clear').addEventListener('click', () => { input.value=''; output.value=''; status.innerHTML=''; });
+document.getElementById('btn-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>
+</body>
+</html>

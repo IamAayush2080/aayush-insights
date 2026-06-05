@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Word Counter — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" />
+  <link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">📊</div>
+    <h1 class="tool-page-title">Word Counter</h1>
+    <p class="tool-page-desc">Count words, characters, sentences, paragraphs and reading time instantly.</p>
+  </div>
+
+  <div class="tool-page-body">
+    <!-- Stats row -->
+    <div class="stat-row" id="stat-row">
+      <div class="stat-box"><div class="stat-box-num" id="s-words">0</div><div class="stat-box-label">Words</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="s-chars">0</div><div class="stat-box-label">Characters</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="s-chars-ns">0</div><div class="stat-box-label">No Spaces</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="s-sentences">0</div><div class="stat-box-label">Sentences</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="s-paragraphs">0</div><div class="stat-box-label">Paragraphs</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="s-reading">0 min</div><div class="stat-box-label">Read Time</div></div>
+    </div>
+
+    <!-- Textarea -->
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">Your text</span>
+        <button class="toolbar-btn" id="btn-clear">Clear</button>
+        <button class="toolbar-btn" id="btn-copy">Copy</button>
+        <button class="toolbar-btn" id="btn-paste">Paste</button>
+      </div>
+      <textarea id="main-input" class="tool-textarea" placeholder="Start typing or paste your text here..."></textarea>
+    </div>
+
+    <!-- Keyword density -->
+    <div class="tool-section-card">
+      <div class="tsc-header">
+        <span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">TOP KEYWORDS</span>
+      </div>
+      <div id="keywords" class="keyword-list"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>
+const input = document.getElementById('main-input');
+
+function update() {
+  const text = input.value;
+  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+  const chars = text.length;
+  const charsNS = text.replace(/\s/g, '').length;
+  const sentences = text.trim() === '' ? 0 : (text.match(/[.!?]+/g) || []).length;
+  const paragraphs = text.trim() === '' ? 0 : text.split(/\n\s*\n/).filter(p => p.trim()).length || (text.trim() ? 1 : 0);
+  const readTime = Math.max(1, Math.ceil(words / 200));
+
+  document.getElementById('s-words').textContent = words.toLocaleString();
+  document.getElementById('s-chars').textContent = chars.toLocaleString();
+  document.getElementById('s-chars-ns').textContent = charsNS.toLocaleString();
+  document.getElementById('s-sentences').textContent = sentences.toLocaleString();
+  document.getElementById('s-paragraphs').textContent = paragraphs.toLocaleString();
+  document.getElementById('s-reading').textContent = readTime + ' min';
+
+  // Keywords
+  const kw = document.getElementById('keywords');
+  if (words === 0) { kw.innerHTML = '<span style="color:var(--text3);font-size:0.85rem;">Keyword density will appear here...</span>'; return; }
+  const stopWords = new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','is','are','was','were','be','been','have','has','had','do','does','did','will','would','could','should','may','might','it','its','this','that','these','those','i','you','he','she','we','they','my','your','his','her','our','their','not','from','by','as','if','so','up','out','about','into','than','then','when','where','which','who','what','how','all','any','both','each','more','most','other','some','such','no','nor','only','own','same','too','very','just','can','now','also']);
+  const freq = {};
+  text.toLowerCase().match(/\b[a-z]{3,}\b/g)?.forEach(w => { if (!stopWords.has(w)) freq[w] = (freq[w] || 0) + 1; });
+  const top = Object.entries(freq).sort((a,b) => b[1]-a[1]).slice(0,8);
+  kw.innerHTML = top.length ? top.map(([w,c]) => `<span class="kw-tag">${w} <span class="kw-count">${c}</span></span>`).join('') : '<span style="color:var(--text3);font-size:0.85rem;">No keywords found</span>';
+}
+
+input.addEventListener('input', update);
+document.getElementById('btn-clear').addEventListener('click', () => { input.value = ''; update(); });
+document.getElementById('btn-copy').addEventListener('click', () => { navigator.clipboard.writeText(input.value); });
+document.getElementById('btn-paste').addEventListener('click', async () => { input.value = await navigator.clipboard.readText(); update(); });
+update();
+</script>
+</body>
+</html>
