@@ -394,3 +394,43 @@
 <script src="tools.js"></script>
 </body>
 </html>
+<script>
+// Inject new tools into grid after page loads
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('tools-grid');
+  const newTools = `
+    <div class="tool-section-label" data-cat="utility">⚡ Productivity Tools</div>
+    <div class="tool-card" data-cat="utility" data-name="pomodoro timer focus productivity">
+      <div class="tool-card-icon">🍅</div>
+      <div class="tool-card-body"><div class="tool-card-name">Pomodoro Timer</div><div class="tool-card-desc">Focus timer with sessions and breaks</div></div>
+      <a href="pomodoro.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="utility" data-name="stopwatch countdown timer laps">
+      <div class="tool-card-icon">⏱️</div>
+      <div class="tool-card-body"><div class="tool-card-name">Stopwatch & Timer</div><div class="tool-card-desc">Stopwatch with laps and countdown timer</div></div>
+      <a href="stopwatch.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="dev" data-name="markdown editor preview write">
+      <div class="tool-card-icon">📝</div>
+      <div class="tool-card-body"><div class="tool-card-name">Markdown Editor</div><div class="tool-card-desc">Write and preview Markdown in real time</div></div>
+      <a href="markdown-editor.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="pdf" data-name="split pdf pages extract">
+      <div class="tool-card-icon">✂️</div>
+      <div class="tool-card-body"><div class="tool-card-name">Split PDF</div><div class="tool-card-desc">Split a PDF into pages or extract a range</div></div>
+      <a href="split-pdf.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="pdf" data-name="pdf compressor compress reduce size">
+      <div class="tool-card-icon">🗜️</div>
+      <div class="tool-card-body"><div class="tool-card-name">PDF Compressor</div><div class="tool-card-desc">Reduce PDF file size in your browser</div></div>
+      <a href="pdf-compressor.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="utility" data-name="unit converter length weight temperature">
+      <div class="tool-card-icon">⚖️</div>
+      <div class="tool-card-body"><div class="tool-card-name">Unit Converter</div><div class="tool-card-desc">Convert length, weight, temperature and more</div></div>
+      <a href="unit-converter.html" class="tool-card-btn">Open →</a>
+    </div>
+  `;
+  grid.insertAdjacentHTML('beforeend', newTools);
+});
+</script>

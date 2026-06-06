@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomodoro Timer — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .timer-circle{position:relative;width:220px;height:220px;margin:0 auto 32px;}
+    .timer-svg{transform:rotate(-90deg);}
+    .timer-track{fill:none;stroke:var(--bg3);stroke-width:8;}
+    .timer-progress{fill:none;stroke:var(--gold);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke 0.3s;}
+    .timer-display{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+    .timer-time{font-family:var(--font-disp);font-size:3rem;font-weight:700;color:var(--text);line-height:1;}
+    .timer-label{font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-top:6px;}
+    .mode-btn{font-family:var(--font-body);font-size:0.82rem;padding:7px 18px;border-radius:99px;border:1px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:var(--transition);}
+    .mode-btn.active{background:var(--gold-dim);color:var(--gold-lt);border-color:var(--gold-dim);}
+    .session-dot{width:10px;height:10px;border-radius:50%;background:var(--border2);transition:var(--transition);}
+    .session-dot.done{background:var(--gold);}
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:600px;text-align:center;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back" style="display:inline-block;text-align:left;">← Back to Tools</a>
+    <div class="tool-page-icon">🍅</div>
+    <h1 class="tool-page-title">Pomodoro Timer</h1>
+    <p class="tool-page-desc">Stay focused. Work in sessions. Take breaks.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Mode selector -->
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:32px;">
+      <button class="mode-btn active" data-mode="focus" data-mins="25">Focus</button>
+      <button class="mode-btn" data-mode="short" data-mins="5">Short Break</button>
+      <button class="mode-btn" data-mode="long" data-mins="15">Long Break</button>
+    </div>
+
+    <!-- Timer circle -->
+    <div class="timer-circle">
+      <svg class="timer-svg" width="220" height="220" viewBox="0 0 220 220">
+        <circle class="timer-track" cx="110" cy="110" r="100"/>
+        <circle class="timer-progress" id="progress-ring" cx="110" cy="110" r="100" stroke-dasharray="628" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-display">
+        <div class="timer-time" id="timer-display">25:00</div>
+        <div class="timer-label" id="timer-label">Focus</div>
+      </div>
+    </div>
+
+    <!-- Session dots -->
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:28px;" id="session-dots"></div>
+
+    <!-- Controls -->
+    <div style="display:flex;gap:12px;justify-content:center;margin-bottom:28px;">
+      <button class="btn-primary" id="btn-start" style="padding:12px 40px;font-size:1rem;min-width:120px;">Start</button>
+      <button class="toolbar-btn" id="btn-reset" style="padding:12px 20px;">Reset</button>
+    </div>
+
+    <!-- Settings -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:left;">
+      <p style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:14px;">SETTINGS</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div><label style="font-size:0.75rem;color:var(--text3);display:block;margin-bottom:4px;">Focus (min)</label><input type="number" id="set-focus" class="tool-input" style="width:100%;" value="25" min="1" max="99"/></div>
+        <div><label style="font-size:0.75rem;color:var(--text3);display:block;margin-bottom:4px;">Short break</label><input type="number" id="set-short" class="tool-input" style="width:100%;" value="5" min="1" max="30"/></div>
+        <div><label style="font-size:0.75rem;color:var(--text3);display:block;margin-bottom:4px;">Long break</label><input type="number" id="set-long" class="tool-input" style="width:100%;" value="15" min="1" max="60"/></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stat-row" style="margin-top:16px;">
+      <div class="stat-box"><div class="stat-box-num" id="stat-sessions">0</div><div class="stat-box-label">Sessions</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="stat-focus">0m</div><div class="stat-box-label">Focus Time</div></div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+const CIRCUMFERENCE = 628;
+let mode='focus', totalSecs=25*60, remaining=25*60, running=false, timer=null, sessions=0, totalFocus=0;
+
+function setMode(m, mins) {
+  mode=m; totalSecs=mins*60; remaining=totalSecs;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`[data-mode="${m}"]`).classList.add('active');
+  document.getElementById('timer-label').textContent = m==='focus'?'Focus':m==='short'?'Short Break':'Long Break';
+  const ring=document.getElementById('progress-ring');
+  ring.style.stroke = m==='focus'?'var(--gold)':m==='short'?'#4ade80':'#60a5fa';
+  updateDisplay(); if(running){clearInterval(timer);running=false;document.getElementById('btn-start').textContent='Start';}
+}
+
+function updateDisplay(){
+  const m=Math.floor(remaining/60), s=remaining%60;
+  document.getElementById('timer-display').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const pct=remaining/totalSecs;
+  document.getElementById('progress-ring').style.strokeDashoffset=CIRCUMFERENCE*(1-pct);
+  document.title=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} — Aayush Insights`;
+}
+
+function renderDots(){
+  document.getElementById('session-dots').innerHTML=[...Array(4)].map((_,i)=>`<div class="session-dot${i<sessions%4?' done':''}"></div>`).join('');
+}
+
+function tick(){
+  if(remaining<=0){
+    clearInterval(timer);running=false;
+    document.getElementById('btn-start').textContent='Start';
+    if(mode==='focus'){sessions++;totalFocus+=parseInt(document.getElementById('set-focus').value);document.getElementById('stat-sessions').textContent=sessions;document.getElementById('stat-focus').textContent=totalFocus+'m';}
+    renderDots();
+    try{new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAA...').play();}catch(e){}
+    alert(mode==='focus'?'Focus session complete! Take a break 🎉':'Break over! Time to focus 💪');
+    return;
+  }
+  remaining--;updateDisplay();
+}
+
+document.getElementById('btn-start').addEventListener('click',function(){
+  if(running){clearInterval(timer);running=false;this.textContent='Resume';}
+  else{timer=setInterval(tick,1000);running=true;this.textContent='Pause';}
+});
+
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  clearInterval(timer);running=false;
+  const minsMap={focus:parseInt(document.getElementById('set-focus').value),short:parseInt(document.getElementById('set-short').value),long:parseInt(document.getElementById('set-long').value)};
+  totalSecs=minsMap[mode]*60;remaining=totalSecs;
+  document.getElementById('btn-start').textContent='Start';updateDisplay();
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn=>btn.addEventListener('click',()=>setMode(btn.dataset.mode,parseInt(btn.dataset.mins))));
+
+['set-focus','set-short','set-long'].forEach(id=>{
+  document.getElementById(id).addEventListener('change',function(){
+    const map={focus:'set-focus',short:'set-short',long:'set-long'};
+    if(map[mode]===id&&!running){totalSecs=parseInt(this.value)*60;remaining=totalSecs;updateDisplay();}
+    document.querySelector(`[data-mode="${id.split('-')[1]}"]`).dataset.mins=this.value;
+  });
+});
+
+renderDots();updateDisplay();
+</script>
+</body>
+</html>

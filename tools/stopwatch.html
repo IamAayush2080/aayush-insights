@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stopwatch & Timer — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:600px;text-align:center;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back" style="display:inline-block;text-align:left;">← Back to Tools</a>
+    <div class="tool-page-icon">⏱️</div>
+    <h1 class="tool-page-title">Stopwatch & Timer</h1>
+    <p class="tool-page-desc">Stopwatch with laps and a countdown timer in one place.</p>
+  </div>
+  <div class="tool-page-body">
+    <!-- Tab switcher -->
+    <div class="tab-nav" style="margin:0 auto 32px;width:fit-content;">
+      <button class="tab-btn active" data-tab="stopwatch">⏱ Stopwatch</button>
+      <button class="tab-btn" data-tab="countdown">⏳ Countdown</button>
+    </div>
+
+    <!-- Stopwatch Panel -->
+    <div class="tab-panel active" id="panel-stopwatch">
+      <div style="font-family:var(--font-disp);font-size:4.5rem;font-weight:900;color:var(--text);letter-spacing:-0.02em;line-height:1;margin-bottom:8px;" id="sw-display">00:00.00</div>
+      <div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:28px;" id="sw-laps-count">0 laps</div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-bottom:24px;">
+        <button class="btn-primary" id="sw-start" style="padding:12px 36px;font-size:1rem;min-width:120px;">Start</button>
+        <button class="toolbar-btn" id="sw-lap" style="padding:12px 20px;" disabled>Lap</button>
+        <button class="toolbar-btn" id="sw-reset" style="padding:12px 20px;">Reset</button>
+      </div>
+      <div id="laps-list" style="max-height:240px;overflow-y:auto;text-align:left;"></div>
+    </div>
+
+    <!-- Countdown Panel -->
+    <div class="tab-panel" id="panel-countdown">
+      <div style="font-family:var(--font-disp);font-size:4.5rem;font-weight:900;letter-spacing:-0.02em;line-height:1;margin-bottom:28px;" id="cd-display" style="color:var(--text);">00:00:00</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:20px;">
+        <div style="text-align:center;"><input type="number" id="cd-h" class="tool-input" style="width:72px;text-align:center;font-size:1.3rem;" value="0" min="0" max="23" placeholder="H"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">HH</div></div>
+        <div style="font-size:2rem;color:var(--text3);align-self:center;">:</div>
+        <div style="text-align:center;"><input type="number" id="cd-m" class="tool-input" style="width:72px;text-align:center;font-size:1.3rem;" value="5" min="0" max="59" placeholder="M"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">MM</div></div>
+        <div style="font-size:2rem;color:var(--text3);align-self:center;">:</div>
+        <div style="text-align:center;"><input type="number" id="cd-s" class="tool-input" style="width:72px;text-align:center;font-size:1.3rem;" value="0" min="0" max="59" placeholder="S"/><div style="font-size:0.7rem;color:var(--text3);margin-top:4px;">SS</div></div>
+      </div>
+      <!-- Quick presets -->
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
+        <button class="toolbar-btn" onclick="setCD(0,1,0)">1 min</button>
+        <button class="toolbar-btn" onclick="setCD(0,5,0)">5 min</button>
+        <button class="toolbar-btn" onclick="setCD(0,10,0)">10 min</button>
+        <button class="toolbar-btn" onclick="setCD(0,25,0)">25 min</button>
+        <button class="toolbar-btn" onclick="setCD(1,0,0)">1 hour</button>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button class="btn-primary" id="cd-start" style="padding:12px 36px;font-size:1rem;min-width:120px;">Start</button>
+        <button class="toolbar-btn" id="cd-reset" style="padding:12px 20px;">Reset</button>
+      </div>
+      <div id="cd-status" style="margin-top:16px;font-size:0.9rem;color:var(--text2);"></div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Stopwatch
+let swMs=0, swRunning=false, swTimer=null, laps=[], swStart=0;
+function fmtSW(ms){const h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000),cs=Math.floor((ms%1000)/10);return`${h>0?String(h).padStart(2,'0')+':':''}${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;}
+function swTick(){swMs=Date.now()-swStart+swMs;swStart=Date.now();document.getElementById('sw-display').textContent=fmtSW(swMs);}
+document.getElementById('sw-start').addEventListener('click',function(){
+  if(swRunning){clearInterval(swTimer);swRunning=false;this.textContent='Resume';document.getElementById('sw-lap').disabled=true;}
+  else{swStart=Date.now();swTimer=setInterval(swTick,10);swRunning=true;this.textContent='Pause';document.getElementById('sw-lap').disabled=false;}
+});
+document.getElementById('sw-lap').addEventListener('click',()=>{
+  laps.push(swMs);
+  document.getElementById('sw-laps-count').textContent=laps.length+' lap'+(laps.length!==1?'s':'');
+  const prev=laps.length>1?laps[laps.length-2]:0;
+  const lapTime=swMs-prev;
+  const list=document.getElementById('laps-list');
+  const div=document.createElement('div');
+  div.style.cssText='display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:6px;font-family:var(--font-mono);font-size:0.85rem;';
+  div.innerHTML=`<span style="color:var(--text3);">Lap ${laps.length}</span><span style="color:var(--text2);">${fmtSW(lapTime)}</span><span style="color:var(--gold);">${fmtSW(swMs)}</span>`;
+  list.insertBefore(div,list.firstChild);
+});
+document.getElementById('sw-reset').addEventListener('click',()=>{
+  clearInterval(swTimer);swRunning=false;swMs=0;laps=[];
+  document.getElementById('sw-display').textContent='00:00.00';
+  document.getElementById('sw-laps-count').textContent='0 laps';
+  document.getElementById('laps-list').innerHTML='';
+  document.getElementById('sw-start').textContent='Start';
+  document.getElementById('sw-lap').disabled=true;
+});
+
+// Countdown
+let cdRemaining=0,cdRunning=false,cdTimer=null;
+function setCD(h,m,s){document.getElementById('cd-h').value=h;document.getElementById('cd-m').value=m;document.getElementById('cd-s').value=s;}
+function fmtCD(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;}
+function updateCDDisplay(){document.getElementById('cd-display').textContent=fmtCD(cdRemaining);}
+document.getElementById('cd-start').addEventListener('click',function(){
+  if(cdRunning){clearInterval(cdTimer);cdRunning=false;this.textContent='Resume';}
+  else{
+    if(!cdRunning&&cdRemaining===0){
+      const h=parseInt(document.getElementById('cd-h').value)||0,m=parseInt(document.getElementById('cd-m').value)||0,s=parseInt(document.getElementById('cd-s').value)||0;
+      cdRemaining=h*3600+m*60+s;
+      if(!cdRemaining)return;
+    }
+    cdTimer=setInterval(()=>{
+      if(cdRemaining<=0){clearInterval(cdTimer);cdRunning=false;document.getElementById('cd-start').textContent='Start';document.getElementById('cd-status').innerHTML='<span style="color:#4ade80;font-weight:500;">⏰ Time\'s up!</span>';return;}
+      cdRemaining--;updateCDDisplay();
+    },1000);
+    cdRunning=true;this.textContent='Pause';document.getElementById('cd-status').innerHTML='';
+  }
+});
+document.getElementById('cd-reset').addEventListener('click',()=>{
+  clearInterval(cdTimer);cdRunning=false;cdRemaining=0;
+  updateCDDisplay();document.getElementById('cd-start').textContent='Start';
+  document.getElementById('cd-status').innerHTML='';
+});
+</script>
+</body>
+</html>
