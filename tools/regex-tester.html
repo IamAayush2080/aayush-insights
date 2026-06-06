@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regex Tester — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .match-highlight { background:rgba(201,168,76,0.25); color:var(--gold-lt); border-radius:2px; outline:2px solid var(--gold-dim); }
+    .match-chip { display:inline-block; font-family:var(--font-mono); font-size:0.78rem; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r-sm); padding:4px 10px; margin:4px; }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🔎</div>
+    <h1 class="tool-page-title">Regex Tester</h1>
+    <p class="tool-page-desc">Test regular expressions with live matching, group capture and replace.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Regex input -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <span style="font-family:var(--font-mono);font-size:1.2rem;color:var(--text3);">/</span>
+        <input type="text" id="regex-input" class="tool-input" style="flex:1;font-family:var(--font-mono);" placeholder="Enter regex pattern..." value="\b\w+@\w+\.\w+\b" />
+        <span style="font-family:var(--font-mono);font-size:1.2rem;color:var(--text3);">/</span>
+        <input type="text" id="flags-input" class="tool-input" style="width:80px;font-family:var(--font-mono);" placeholder="flags" value="gi" />
+      </div>
+      <div id="regex-error" style="margin-top:8px;font-size:0.82rem;color:#f87171;font-family:var(--font-mono);display:none;"></div>
+
+      <!-- Common patterns -->
+      <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap;">
+        <span style="font-size:0.72rem;color:var(--text3);align-self:center;font-family:var(--font-mono);">Quick:</span>
+        <button class="toolbar-btn" data-pattern="\b\w+@\w+\.\w+\b" data-flags="gi">Email</button>
+        <button class="toolbar-btn" data-pattern="https?:\/\/[^\s]+" data-flags="gi">URL</button>
+        <button class="toolbar-btn" data-pattern="\b\d{10}\b" data-flags="g">Phone</button>
+        <button class="toolbar-btn" data-pattern="#[0-9a-fA-F]{6}" data-flags="gi">HEX Color</button>
+        <button class="toolbar-btn" data-pattern="\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b" data-flags="g">IP Address</button>
+        <button class="toolbar-btn" data-pattern="^\d{4}-\d{2}-\d{2}$" data-flags="gm">Date YYYY-MM-DD</button>
+      </div>
+    </div>
+
+    <!-- Test string -->
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">Test String</span>
+        <button class="toolbar-btn" id="btn-paste">Paste</button>
+        <button class="toolbar-btn" id="btn-clear-test">Clear</button>
+        <span id="match-count" style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);margin-left:auto;"></span>
+      </div>
+      <div id="test-display" style="padding:16px 20px;min-height:120px;font-family:var(--font-mono);font-size:0.88rem;line-height:1.8;white-space:pre-wrap;word-break:break-word;color:var(--text);display:none;"></div>
+      <textarea id="test-input" class="tool-textarea" style="font-family:var(--font-mono);font-size:0.88rem;" placeholder="Paste your test string here...
+Example: Contact us at hello@aayush.com or visit https://aayushinsights.com for more info."></textarea>
+    </div>
+
+    <!-- Matches -->
+    <div id="matches-section" style="display:none;">
+      <div class="tool-section-card">
+        <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">MATCHES</span></div>
+        <div id="matches-list"></div>
+      </div>
+    </div>
+
+    <!-- Replace -->
+    <div class="tool-section-card" style="margin-top:16px;">
+      <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">REPLACE</span></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <input type="text" id="replace-input" class="tool-input" style="flex:1;" placeholder="Replace with... (use $1 for groups)" />
+        <button class="btn-primary" id="btn-replace" style="padding:8px 20px;">Replace All</button>
+        <button class="toolbar-btn" id="btn-copy-result">Copy Result</button>
+      </div>
+      <div id="replace-result" style="margin-top:12px;font-family:var(--font-mono);font-size:0.85rem;color:var(--text2);background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;display:none;white-space:pre-wrap;word-break:break-word;"></div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+function test() {
+  const pattern = document.getElementById('regex-input').value;
+  const flags   = document.getElementById('flags-input').value;
+  const text    = document.getElementById('test-input').value;
+  const errEl   = document.getElementById('regex-error');
+  const countEl = document.getElementById('match-count');
+  const display = document.getElementById('test-display');
+  const textarea= document.getElementById('test-input');
+
+  if (!pattern) { errEl.style.display='none'; countEl.textContent=''; display.style.display='none'; textarea.style.display='block'; document.getElementById('matches-section').style.display='none'; return; }
+
+  let regex;
+  try {
+    regex = new RegExp(pattern, flags);
+    errEl.style.display = 'none';
+  } catch(e) {
+    errEl.textContent = '✗ ' + e.message;
+    errEl.style.display = 'block';
+    countEl.textContent = '';
+    return;
+  }
+
+  if (!text) { display.style.display='none'; textarea.style.display='block'; return; }
+
+  const matches = [...text.matchAll(new RegExp(pattern, flags.includes('g')?flags:flags+'g'))];
+  countEl.textContent = matches.length + ' match' + (matches.length!==1?'es':'');
+
+  // Highlight in display
+  let highlighted = '';
+  let last = 0;
+  matches.forEach(m => {
+    highlighted += escHtml(text.slice(last, m.index));
+    highlighted += `<mark class="match-highlight">${escHtml(m[0])}</mark>`;
+    last = m.index + m[0].length;
+  });
+  highlighted += escHtml(text.slice(last));
+  display.innerHTML = highlighted;
+  display.style.display = 'block';
+  textarea.style.display = 'none';
+
+  // Show matches list
+  if (matches.length > 0) {
+    document.getElementById('matches-list').innerHTML = matches.map((m,i) =>
+      `<div style="margin-bottom:8px;"><span style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);">Match ${i+1} at index ${m.index}</span><div style="margin-top:4px;"><span class="match-chip">${escHtml(m[0])}</span>${m.slice(1).map((g,gi)=>`<span class="match-chip" style="border-color:var(--gold-dim);color:var(--gold);">Group ${gi+1}: ${escHtml(g||'')}</span>`).join('')}</div></div>`
+    ).join('');
+    document.getElementById('matches-section').style.display = 'block';
+  } else {
+    document.getElementById('matches-section').style.display = 'none';
+  }
+}
+
+function escHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+document.getElementById('regex-input').addEventListener('input', test);
+document.getElementById('flags-input').addEventListener('input', test);
+document.getElementById('test-input').addEventListener('input', test);
+
+document.querySelectorAll('[data-pattern]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('regex-input').value = btn.dataset.pattern;
+    document.getElementById('flags-input').value = btn.dataset.flags;
+    test();
+  });
+});
+
+document.getElementById('btn-paste').addEventListener('click', async () => { document.getElementById('test-input').value = await navigator.clipboard.readText(); test(); });
+document.getElementById('btn-clear-test').addEventListener('click', () => { document.getElementById('test-input').value=''; document.getElementById('test-display').style.display='none'; document.getElementById('test-input').style.display='block'; test(); });
+
+document.getElementById('btn-replace').addEventListener('click', () => {
+  const pattern = document.getElementById('regex-input').value;
+  const flags   = document.getElementById('flags-input').value;
+  const text    = document.getElementById('test-input').value;
+  const repl    = document.getElementById('replace-input').value;
+  try {
+    const result = text.replace(new RegExp(pattern, flags), repl);
+    const el = document.getElementById('replace-result');
+    el.textContent = result;
+    el.style.display = 'block';
+  } catch(e) {}
+});
+document.getElementById('btn-copy-result').addEventListener('click', () => navigator.clipboard.writeText(document.getElementById('replace-result').textContent));
+
+test();
+</script>
+</body>
+</html>

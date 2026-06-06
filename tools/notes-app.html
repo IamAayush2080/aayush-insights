@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notes App — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .notes-layout { display:grid; grid-template-columns:260px 1fr; gap:16px; min-height:520px; }
+    .notes-sidebar { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; display:flex; flex-direction:column; }
+    .notes-sidebar-header { padding:14px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+    .note-item { padding:12px 16px; border-bottom:1px solid var(--border); cursor:pointer; transition:var(--transition); }
+    .note-item:hover { background:var(--bg3); }
+    .note-item.active { background:var(--gold-dim); border-left:2px solid var(--gold); }
+    .note-item-title { font-size:0.88rem; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px; }
+    .note-item-preview { font-size:0.75rem; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .note-item-date { font-size:0.68rem; color:var(--text3); font-family:var(--font-mono); margin-top:4px; }
+    .notes-editor { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; display:flex; flex-direction:column; }
+    .notes-editor-header { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; background:var(--bg3); }
+    #note-title-input { flex:1; background:none; border:none; outline:none; font-family:var(--font-disp); font-size:1rem; font-weight:700; color:var(--text); }
+    #note-body-input { flex:1; background:none; border:none; outline:none; padding:20px; font-family:var(--font-body); font-size:0.93rem; color:var(--text); line-height:1.8; resize:none; min-height:400px; }
+    .empty-note { display:flex; flex-direction:column; align-items:center; justify-content:center; height:400px; color:var(--text3); gap:12px; }
+    @media(max-width:640px){ .notes-layout{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:1000px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">📒</div>
+    <h1 class="tool-page-title">Notes App</h1>
+    <p class="tool-page-desc">Quick notes saved in your browser. No account needed — your notes stay on your device.</p>
+  </div>
+  <div class="tool-page-body">
+    <div class="notes-layout">
+
+      <!-- Sidebar -->
+      <div class="notes-sidebar">
+        <div class="notes-sidebar-header">
+          <span style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;flex:1;">NOTES (<span id="note-count">0</span>)</span>
+          <button class="toolbar-btn primary" id="btn-new-note" style="padding:4px 12px;font-size:0.78rem;">+ New</button>
+        </div>
+        <!-- Search -->
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);">
+          <input type="text" id="note-search" class="tool-input" style="width:100%;padding:6px 10px;font-size:0.82rem;" placeholder="Search notes..." />
+        </div>
+        <div id="notes-list" style="overflow-y:auto;flex:1;"></div>
+      </div>
+
+      <!-- Editor -->
+      <div class="notes-editor">
+        <div class="notes-editor-header">
+          <input type="text" id="note-title-input" placeholder="Note title..." style="display:none;" />
+          <span id="editor-placeholder" style="font-size:0.85rem;color:var(--text3);">Select or create a note</span>
+          <div id="editor-actions" style="display:none;margin-left:auto;display:flex;gap:8px;">
+            <span id="save-indicator" style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);align-self:center;"></span>
+            <button class="toolbar-btn" id="btn-copy-note">Copy</button>
+            <button class="toolbar-btn" id="btn-download-note">Download</button>
+            <button class="toolbar-btn" id="btn-delete-note" style="color:#f87171;border-color:rgba(248,113,113,0.3);">Delete</button>
+          </div>
+        </div>
+        <div id="editor-empty" class="empty-note">
+          <div style="font-size:2.5rem;">📒</div>
+          <p style="font-size:0.9rem;">Click "+ New" to create a note</p>
+          <p style="font-size:0.78rem;color:var(--text3);">Notes are saved automatically in your browser</p>
+        </div>
+        <textarea id="note-body-input" placeholder="Start writing..." style="display:none;"></textarea>
+        <div id="note-stats" style="padding:8px 16px;border-top:1px solid var(--border);font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+let notes = JSON.parse(localStorage.getItem('aayush-notes') || '[]');
+let activeId = null;
+let saveTimer = null;
+
+function save() { localStorage.setItem('aayush-notes', JSON.stringify(notes)); }
+
+function renderList(query='') {
+  const list = document.getElementById('notes-list');
+  const filtered = notes.filter(n =>
+    !query || n.title.toLowerCase().includes(query) || n.body.toLowerCase().includes(query)
+  ).sort((a,b) => b.updated - a.updated);
+
+  document.getElementById('note-count').textContent = notes.length;
+
+  if (!filtered.length) {
+    list.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text3);font-size:0.85rem;">${query?'No results':'No notes yet'}</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(n => `
+    <div class="note-item${n.id===activeId?' active':''}" data-id="${n.id}">
+      <div class="note-item-title">${n.title||'Untitled'}</div>
+      <div class="note-item-preview">${n.body.slice(0,60)||'Empty note'}</div>
+      <div class="note-item-date">${new Date(n.updated).toLocaleDateString()}</div>
+    </div>`).join('');
+
+  list.querySelectorAll('.note-item').forEach(el => {
+    el.addEventListener('click', () => openNote(el.dataset.id));
+  });
+}
+
+function openNote(id) {
+  activeId = id;
+  const note = notes.find(n => n.id === id);
+  if (!note) return;
+
+  document.getElementById('editor-empty').style.display = 'none';
+  document.getElementById('note-title-input').style.display = 'block';
+  document.getElementById('note-body-input').style.display = 'block';
+  document.getElementById('note-stats').style.display = 'block';
+  document.getElementById('editor-actions').style.display = 'flex';
+  document.getElementById('editor-placeholder').style.display = 'none';
+
+  document.getElementById('note-title-input').value = note.title;
+  document.getElementById('note-body-input').value = note.body;
+  updateStats(note.body);
+  renderList(document.getElementById('note-search').value);
+}
+
+function updateStats(text) {
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('note-stats').textContent = `${words} words · ${text.length} characters`;
+}
+
+function autoSave() {
+  if (!activeId) return;
+  const note = notes.find(n => n.id === activeId);
+  if (!note) return;
+  note.title = document.getElementById('note-title-input').value;
+  note.body  = document.getElementById('note-body-input').value;
+  note.updated = Date.now();
+  save();
+  updateStats(note.body);
+  document.getElementById('save-indicator').textContent = 'Saved ✓';
+  setTimeout(() => { document.getElementById('save-indicator').textContent = ''; }, 2000);
+  renderList(document.getElementById('note-search').value);
+}
+
+document.getElementById('btn-new-note').addEventListener('click', () => {
+  const note = { id: Date.now().toString(), title:'', body:'', created:Date.now(), updated:Date.now() };
+  notes.unshift(note);
+  save();
+  renderList();
+  openNote(note.id);
+  document.getElementById('note-title-input').focus();
+});
+
+document.getElementById('note-title-input').addEventListener('input', () => { clearTimeout(saveTimer); saveTimer=setTimeout(autoSave,600); });
+document.getElementById('note-body-input').addEventListener('input', () => { clearTimeout(saveTimer); saveTimer=setTimeout(autoSave,600); });
+document.getElementById('note-search').addEventListener('input', e => renderList(e.target.value.toLowerCase()));
+
+document.getElementById('btn-delete-note').addEventListener('click', () => {
+  if (!activeId || !confirm('Delete this note?')) return;
+  notes = notes.filter(n => n.id !== activeId);
+  activeId = null;
+  save();
+  document.getElementById('editor-empty').style.display = 'flex';
+  document.getElementById('note-title-input').style.display = 'none';
+  document.getElementById('note-body-input').style.display = 'none';
+  document.getElementById('note-stats').style.display = 'none';
+  document.getElementById('editor-actions').style.display = 'none';
+  document.getElementById('editor-placeholder').style.display = 'block';
+  renderList();
+});
+
+document.getElementById('btn-copy-note').addEventListener('click', () => {
+  const note = notes.find(n=>n.id===activeId);
+  if (note) navigator.clipboard.writeText(`${note.title}\n\n${note.body}`);
+});
+
+document.getElementById('btn-download-note').addEventListener('click', () => {
+  const note = notes.find(n=>n.id===activeId);
+  if (!note) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([`${note.title}\n\n${note.body}`],{type:'text/plain'}));
+  a.download = `${note.title||'note'}.txt`; a.click();
+});
+
+renderList();
+</script>
+</body>
+</html>

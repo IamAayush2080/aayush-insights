@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Random Generator — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🎲</div>
+    <h1 class="tool-page-title">Random Generator</h1>
+    <p class="tool-page-desc">Generate random numbers, pick from a list, flip a coin, roll dice and more.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Tab nav -->
+    <div class="tab-nav" style="margin-bottom:28px;">
+      <button class="tab-btn active" data-tab="number">🔢 Number</button>
+      <button class="tab-btn" data-tab="picker">🎯 Picker</button>
+      <button class="tab-btn" data-tab="coin">🪙 Coin</button>
+      <button class="tab-btn" data-tab="dice">🎲 Dice</button>
+      <button class="tab-btn" data-tab="uuid">🔑 UUID</button>
+    </div>
+
+    <!-- Number panel -->
+    <div class="tab-panel active" id="panel-number">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-bottom:16px;">
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px;">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);">MIN</label>
+            <input type="number" id="num-min" class="tool-input" style="width:110px;" value="1" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);">MAX</label>
+            <input type="number" id="num-max" class="tool-input" style="width:110px;" value="100" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);">COUNT</label>
+            <input type="number" id="num-count" class="tool-input" style="width:80px;" value="1" min="1" max="100" />
+          </div>
+          <label class="checkbox-item"><input type="checkbox" id="no-repeat"> No repeat</label>
+        </div>
+        <button class="btn-primary" id="btn-gen-num" style="padding:12px 32px;font-size:1rem;">Generate →</button>
+      </div>
+      <div id="num-result" style="display:none;text-align:center;">
+        <div id="num-output" style="font-family:var(--font-disp);font-size:3.5rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:16px;"></div>
+        <button class="toolbar-btn" id="btn-copy-num">Copy</button>
+      </div>
+    </div>
+
+    <!-- Picker panel -->
+    <div class="tab-panel" id="panel-picker">
+      <div class="tool-input-wrap" style="margin-bottom:16px;">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono">Items (one per line)</span>
+          <button class="toolbar-btn" id="btn-clear-picker">Clear</button>
+        </div>
+        <textarea id="picker-input" class="tool-textarea" style="min-height:160px;" placeholder="Option 1&#10;Option 2&#10;Option 3&#10;Option 4"></textarea>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+        <button class="btn-primary" id="btn-pick" style="padding:12px 32px;font-size:1rem;">Pick Random →</button>
+        <label class="checkbox-item"><input type="checkbox" id="pick-multiple"> Pick multiple</label>
+        <input type="number" id="pick-count" class="tool-input" style="width:70px;" value="3" min="1" />
+      </div>
+      <div id="pick-result" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;text-align:center;">
+        <p style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:12px;">SELECTED</p>
+        <div id="pick-output" style="font-family:var(--font-disp);font-size:2rem;font-weight:700;color:var(--gold);line-height:1.3;"></div>
+      </div>
+    </div>
+
+    <!-- Coin panel -->
+    <div class="tab-panel" id="panel-coin" style="text-align:center;">
+      <div id="coin-display" style="font-size:8rem;margin:20px 0;transition:transform 0.4s ease;cursor:pointer;" title="Click to flip">🪙</div>
+      <div id="coin-result" style="font-family:var(--font-disp);font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:20px;min-height:3rem;"></div>
+      <button class="btn-primary" id="btn-flip" style="padding:12px 40px;font-size:1rem;">Flip Coin</button>
+      <div id="coin-stats" style="margin-top:20px;display:flex;gap:20px;justify-content:center;font-family:var(--font-mono);font-size:0.82rem;color:var(--text3);"></div>
+    </div>
+
+    <!-- Dice panel -->
+    <div class="tab-panel" id="panel-dice" style="text-align:center;">
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
+        <button class="toolbar-btn" data-sides="4">D4</button>
+        <button class="toolbar-btn active" data-sides="6">D6</button>
+        <button class="toolbar-btn" data-sides="8">D8</button>
+        <button class="toolbar-btn" data-sides="10">D10</button>
+        <button class="toolbar-btn" data-sides="12">D12</button>
+        <button class="toolbar-btn" data-sides="20">D20</button>
+        <button class="toolbar-btn" data-sides="100">D100</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:20px;">
+        <label style="font-size:0.85rem;color:var(--text2);">Number of dice:</label>
+        <input type="number" id="dice-count" class="tool-input" style="width:70px;" value="1" min="1" max="20" />
+      </div>
+      <div id="dice-display" style="font-size:5rem;margin:16px 0;transition:transform 0.3s;">🎲</div>
+      <div id="dice-result" style="font-family:var(--font-disp);font-size:2.5rem;font-weight:700;color:var(--gold);margin-bottom:20px;min-height:3rem;"></div>
+      <button class="btn-primary" id="btn-roll" style="padding:12px 40px;font-size:1rem;">Roll Dice</button>
+      <div id="dice-breakdown" style="margin-top:16px;font-size:0.85rem;color:var(--text2);"></div>
+    </div>
+
+    <!-- UUID panel -->
+    <div class="tab-panel" id="panel-uuid">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:16px;">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <select class="tool-select" id="uuid-version">
+            <option value="4">UUID v4 (random)</option>
+            <option value="custom">Custom ID</option>
+          </select>
+          <input type="number" id="uuid-count" class="tool-input" style="width:100px;" value="5" min="1" max="50" />
+          <button class="btn-primary" id="btn-gen-uuid" style="padding:10px 24px;">Generate →</button>
+        </div>
+      </div>
+      <div id="uuid-result" class="tool-output" style="min-height:120px;font-size:0.85rem;"></div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="toolbar-btn" id="btn-copy-uuid">Copy All</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// Number
+document.getElementById('btn-gen-num').addEventListener('click', () => {
+  const min=parseInt(document.getElementById('num-min').value);
+  const max=parseInt(document.getElementById('num-max').value);
+  const count=parseInt(document.getElementById('num-count').value)||1;
+  const noRep=document.getElementById('no-repeat').checked;
+  const results=[];
+  const used=new Set();
+  for(let i=0;i<count;i++){
+    let n;
+    do { n=Math.floor(Math.random()*(max-min+1))+min; } while(noRep&&used.has(n)&&used.size<(max-min+1));
+    used.add(n); results.push(n);
+  }
+  document.getElementById('num-output').textContent = results.join(', ');
+  document.getElementById('num-result').style.display='block';
+});
+document.getElementById('btn-copy-num').addEventListener('click',()=>navigator.clipboard.writeText(document.getElementById('num-output').textContent));
+
+// Picker
+document.getElementById('btn-pick').addEventListener('click',()=>{
+  const items=document.getElementById('picker-input').value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!items.length)return;
+  const multiple=document.getElementById('pick-multiple').checked;
+  const count=Math.min(parseInt(document.getElementById('pick-count').value)||1,items.length);
+  let picked;
+  if(multiple){
+    const shuffled=[...items].sort(()=>Math.random()-0.5);
+    picked=shuffled.slice(0,count);
+  } else {
+    picked=[items[Math.floor(Math.random()*items.length)]];
+  }
+  document.getElementById('pick-output').innerHTML=picked.map(p=>`<div style="padding:4px 0;">${p}</div>`).join('');
+  document.getElementById('pick-result').style.display='block';
+});
+document.getElementById('btn-clear-picker').addEventListener('click',()=>{document.getElementById('picker-input').value='';document.getElementById('pick-result').style.display='none';});
+
+// Coin
+let heads=0,tails=0;
+document.getElementById('btn-flip').addEventListener('click',()=>{
+  const coin=document.getElementById('coin-display');
+  coin.style.transform='rotateY(720deg)';
+  setTimeout(()=>{
+    const result=Math.random()<0.5;
+    if(result)heads++;else tails++;
+    coin.textContent=result?'🟡':'⚪';
+    coin.style.transform='';
+    document.getElementById('coin-result').textContent=result?'HEADS':'TAILS';
+    document.getElementById('coin-stats').textContent=`Heads: ${heads} · Tails: ${tails} · Total: ${heads+tails}`;
+  },400);
+});
+document.getElementById('coin-display').addEventListener('click',()=>document.getElementById('btn-flip').click());
+
+// Dice
+let selectedSides=6;
+document.querySelectorAll('[data-sides]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-sides]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); selectedSides=parseInt(btn.dataset.sides);
+  });
+});
+const diceFaces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+document.getElementById('btn-roll').addEventListener('click',()=>{
+  const count=parseInt(document.getElementById('dice-count').value)||1;
+  const rolls=[...Array(count)].map(()=>Math.floor(Math.random()*selectedSides)+1);
+  const total=rolls.reduce((a,b)=>a+b,0);
+  const display=document.getElementById('dice-display');
+  display.style.transform='rotate(360deg)';
+  setTimeout(()=>{display.style.transform='';},300);
+  display.textContent=count===1&&selectedSides===6?diceFaces[rolls[0]-1]:'🎲';
+  document.getElementById('dice-result').textContent=count>1?`Total: ${total}`:rolls[0];
+  document.getElementById('dice-breakdown').textContent=count>1?`Rolls: ${rolls.join(', ')} (${count}d${selectedSides})`:`d${selectedSides}`;
+});
+
+// UUID
+function genUUID(){return'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16);});}
+function genCustomID(){return Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).substring(2,8).toUpperCase();}
+document.getElementById('btn-gen-uuid').addEventListener('click',()=>{
+  const count=parseInt(document.getElementById('uuid-count').value)||5;
+  const ver=document.getElementById('uuid-version').value;
+  const ids=[...Array(count)].map(()=>ver==='4'?genUUID():genCustomID());
+  document.getElementById('uuid-result').textContent=ids.join('\n');
+});
+document.getElementById('btn-copy-uuid').addEventListener('click',()=>navigator.clipboard.writeText(document.getElementById('uuid-result').textContent));
+</script>
+</body>
+</html>
