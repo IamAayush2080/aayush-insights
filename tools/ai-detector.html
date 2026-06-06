@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Content Detector — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🤖</div>
+    <h1 class="tool-page-title">AI Content Detector</h1>
+    <p class="tool-page-desc">Analyse text for patterns commonly found in AI-generated content.</p>
+  </div>
+  <div class="tool-page-body">
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">Paste Text</span>
+        <button class="toolbar-btn" id="btn-paste">Paste</button>
+        <button class="toolbar-btn" id="btn-clear">Clear</button>
+        <span id="word-count" style="font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);margin-left:auto;">0 words</span>
+      </div>
+      <textarea id="main-input" class="tool-textarea" style="min-height:200px;" placeholder="Paste the text you want to analyse here (minimum 50 words for best accuracy)..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-analyse" style="padding:10px 28px;">Analyse Text →</button>
+    </div>
+
+    <div id="result" style="display:none;margin-top:24px;">
+      <!-- Score circle -->
+      <div style="text-align:center;margin-bottom:28px;">
+        <div id="score-circle" style="display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:140px;height:140px;border-radius:50%;border:4px solid var(--gold);background:var(--bg2);margin-bottom:12px;">
+          <div id="score-num" style="font-family:var(--font-disp);font-size:2.5rem;font-weight:900;color:var(--gold);line-height:1;">0%</div>
+          <div style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;">AI SCORE</div>
+        </div>
+        <div id="verdict" style="font-size:1.1rem;font-weight:500;color:var(--text);"></div>
+        <div id="verdict-sub" style="font-size:0.85rem;color:var(--text2);margin-top:4px;"></div>
+      </div>
+
+      <!-- Signals -->
+      <div class="tool-section-card">
+        <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">DETECTED SIGNALS</span></div>
+        <div id="signals-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+      </div>
+
+      <div style="margin-top:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;">
+        <p style="font-size:0.78rem;color:var(--text3);">⚠ This tool uses heuristic pattern analysis. It is not 100% accurate and should be used as a guide only, not as definitive proof.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+document.getElementById('main-input').addEventListener('input', function() {
+  const words = this.value.trim() === '' ? 0 : this.value.trim().split(/\s+/).length;
+  document.getElementById('word-count').textContent = words + ' words';
+});
+
+document.getElementById('btn-paste').addEventListener('click', async () => { document.getElementById('main-input').value = await navigator.clipboard.readText(); document.getElementById('main-input').dispatchEvent(new Event('input')); });
+document.getElementById('btn-clear').addEventListener('click', () => { document.getElementById('main-input').value=''; document.getElementById('result').style.display='none'; document.getElementById('word-count').textContent='0 words'; });
+
+document.getElementById('btn-analyse').addEventListener('click', () => {
+  const text = document.getElementById('main-input').value.trim();
+  if (!text || text.split(/\s+/).length < 20) { alert('Please enter at least 20 words for analysis.'); return; }
+
+  const signals = [];
+  let score = 0;
+
+  // Signal 1: Perplexity — uniform sentence lengths
+  const sentences = text.split(/[.!?]+/).filter(s=>s.trim().length>0);
+  const lengths = sentences.map(s=>s.trim().split(/\s+/).length);
+  const avgLen = lengths.reduce((a,b)=>a+b,0)/lengths.length;
+  const variance = lengths.reduce((a,b)=>a+Math.pow(b-avgLen,2),0)/lengths.length;
+  if (variance < 12) { score+=20; signals.push({label:'Uniform sentence lengths', detail:'Low variation in sentence length is common in AI text.', flag:true}); }
+  else signals.push({label:'Natural sentence variation', detail:'Sentence lengths vary naturally — a human indicator.', flag:false});
+
+  // Signal 2: Transition phrases
+  const aiPhrases = ['furthermore','moreover','additionally','in conclusion','it is important to note','it is worth noting','in summary','as a result','therefore','consequently','nevertheless','on the other hand','in other words','to summarize','this highlights','this demonstrates','this shows that','it should be noted'];
+  const textLower = text.toLowerCase();
+  const foundPhrases = aiPhrases.filter(p=>textLower.includes(p));
+  if (foundPhrases.length >= 3) { score+=25; signals.push({label:`${foundPhrases.length} AI transition phrases found`, detail:`"${foundPhrases.slice(0,3).join('", "')}"`, flag:true}); }
+  else if (foundPhrases.length > 0) { score+=8; signals.push({label:`${foundPhrases.length} common phrase(s) found`, detail:`"${foundPhrases.join('", "')}"`, flag:true}); }
+  else signals.push({label:'No common AI transition phrases', detail:'No typical AI phrases detected.', flag:false});
+
+  // Signal 3: Passive voice overuse
+  const passivePatterns = text.match(/\b(is|are|was|were|be|been|being)\s+\w+ed\b/gi)||[];
+  const passiveRatio = passivePatterns.length / sentences.length;
+  if (passiveRatio > 0.4) { score+=15; signals.push({label:'High passive voice usage', detail:`${passivePatterns.length} passive constructions detected — AI tends to overuse passive voice.`, flag:true}); }
+  else signals.push({label:'Normal passive voice ratio', detail:`${passivePatterns.length} passive constructions — within human range.`, flag:false});
+
+  // Signal 4: Repetitive word stems
+  const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g)||[];
+  const freq = {};
+  words.forEach(w=>freq[w]=(freq[w]||0)+1);
+  const repeated = Object.entries(freq).filter(([,c])=>c>4).length;
+  if (repeated > 5) { score+=15; signals.push({label:'High word repetition', detail:`${repeated} words repeated 4+ times — AI often overuses specific vocabulary.`, flag:true}); }
+  else signals.push({label:'Varied vocabulary', detail:'Good word diversity detected.', flag:false});
+
+  // Signal 5: Burstiness — too consistent paragraph lengths
+  const paragraphs = text.split(/\n\s*\n/).filter(p=>p.trim());
+  if (paragraphs.length > 2) {
+    const pLengths = paragraphs.map(p=>p.trim().split(/\s+/).length);
+    const pVar = pLengths.reduce((a,b)=>a+Math.pow(b-(pLengths.reduce((x,y)=>x+y,0)/pLengths.length),2),0)/pLengths.length;
+    if (pVar < 30) { score+=15; signals.push({label:'Uniform paragraph structure', detail:'Paragraphs are suspiciously similar in length.', flag:true}); }
+    else signals.push({label:'Natural paragraph variation', detail:'Paragraph lengths vary naturally.', flag:false});
+  }
+
+  // Signal 6: First person usage
+  const firstPerson = (text.match(/\b(I|I've|I'm|I'd|my|me|myself)\b/g)||[]).length;
+  if (firstPerson < 2 && text.split(/\s+/).length > 100) { score+=10; signals.push({label:'Low first-person usage', detail:'AI text often avoids personal pronouns.', flag:true}); }
+  else signals.push({label:'Personal voice detected', detail:'First-person usage suggests human authorship.', flag:false});
+
+  score = Math.min(98, Math.max(2, score));
+
+  const colors = score>70?'#ef4444':score>40?'#f97316':'#22c55e';
+  const verdicts = score>70?['Likely AI Generated','High probability this text was written by AI.']:score>40?['Possibly AI Generated','Mixed signals — could be AI-assisted or heavily edited AI text.']:['Likely Human Written','Low AI probability. Text shows natural human patterns.'];
+
+  document.getElementById('score-num').textContent = score+'%';
+  document.getElementById('score-circle').style.borderColor = colors;
+  document.getElementById('score-num').style.color = colors;
+  document.getElementById('verdict').textContent = verdicts[0];
+  document.getElementById('verdict-sub').textContent = verdicts[1];
+
+  document.getElementById('signals-list').innerHTML = signals.map(s=>`
+    <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--bg3);border:1px solid ${s.flag?'rgba(248,113,113,0.2)':'rgba(74,222,128,0.15)'};border-radius:var(--r-sm);">
+      <span style="font-size:1rem;flex-shrink:0;">${s.flag?'🔴':'🟢'}</span>
+      <div>
+        <div style="font-size:0.85rem;font-weight:500;color:var(--text);">${s.label}</div>
+        <div style="font-size:0.78rem;color:var(--text3);margin-top:2px;">${s.detail}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('result').style.display = 'block';
+});
+</script>
+</body>
+</html>

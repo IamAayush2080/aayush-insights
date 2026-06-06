@@ -1,15 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thoughts — Aayush Insights</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    .thoughts-hero{padding:120px 5% 60px;max-width:900px;margin:0 auto;}
+    .thoughts-container{max-width:900px;margin:0 auto;padding:0 5% 80px;}
+    .thought-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-bottom:16px;transition:var(--transition);position:relative;overflow:hidden;}
+    .thought-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-glow),transparent 60%);opacity:0;transition:var(--transition);}
+    .thought-card:hover{border-color:var(--border2);}
+    .thought-card:hover::before{opacity:1;}
+    .thought-type{display:inline-flex;align-items:center;gap:6px;font-size:0.68rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;text-transform:uppercase;background:var(--gold-dim);padding:3px 10px;border-radius:99px;margin-bottom:14px;}
+    .thought-text{font-size:1rem;color:var(--text);line-height:1.75;position:relative;z-index:1;}
+    .thought-text em{color:var(--gold);font-style:italic;}
+    .thought-meta{display:flex;align-items:center;gap:12px;margin-top:16px;padding-top:12px;border-top:1px solid var(--border);}
+    .thought-date{font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);}
+    .write-box{background:var(--bg2);border:2px dashed var(--border2);border-radius:var(--r-lg);padding:32px;text-align:center;margin-bottom:32px;}
+  </style>
 </head>
-<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;text-align:center;padding:40px;">
-  <p style="font-family:var(--font-mono);font-size:0.7rem;letter-spacing:0.2em;color:var(--gold);">DAY 20 · COMING SOON</p>
-  <h1 style="font-family:var(--font-disp);font-size:3rem;color:var(--text);">My Thoughts</h1>
-  <p style="color:var(--text2);max-width:400px;">Raw opinions, crazy ideas and experiences. Coming soon.</p>
-  <a href="../index.html" style="margin-top:16px;color:var(--gold);font-size:0.9rem;">← Back to home</a>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../tools/index.html">Tools</a></li>
+    <li><a href="../blog/index.html">Writings</a></li>
+    <li><a href="#" class="active">Thoughts</a></li>
+  </ul>
+  <a href="../index.html" class="nav-cta">← Home</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav">
+  <a href="../index.html#about">About</a>
+  <a href="../tools/index.html">Tools</a>
+  <a href="../blog/index.html">Writings</a>
+  <a href="#">Thoughts</a>
+</div>
+
+<div class="thoughts-hero">
+  <p class="section-eyebrow mono">✦ Unfiltered · Raw · Real · #7539</p>
+  <h1 style="font-size:clamp(2.5rem,5vw,4.5rem);font-weight:900;line-height:1.05;margin:12px 0 16px;">My <em style="color:var(--gold);font-style:italic;">Thoughts</em></h1>
+  <p style="font-size:1rem;color:var(--text2);max-width:520px;line-height:1.7;">Things I think about. Crazy ideas. Experiences. Achievements on the way. Queries I have about this universe. This is my unfiltered space — no editing, no polishing, just real.</p>
+</div>
+
+<div class="thoughts-container">
+
+  <!-- Filter -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;" id="thought-filter">
+    <button class="filter-btn active" data-type="all" style="font-family:var(--font-body);font-size:0.82rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:99px;cursor:pointer;transition:var(--transition);">All</button>
+    <button class="filter-btn" data-type="thought" style="font-family:var(--font-body);font-size:0.82rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:99px;cursor:pointer;transition:var(--transition);">💭 Thought</button>
+    <button class="filter-btn" data-type="opinion" style="font-family:var(--font-body);font-size:0.82rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:99px;cursor:pointer;transition:var(--transition);">🧠 Opinion</button>
+    <button class="filter-btn" data-type="question" style="font-family:var(--font-body);font-size:0.82rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:99px;cursor:pointer;transition:var(--transition);">❓ Question</button>
+    <button class="filter-btn" data-type="experience" style="font-family:var(--font-body);font-size:0.82rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:99px;cursor:pointer;transition:var(--transition);">🌟 Experience</button>
+    <button class="filter-btn" data-type="crazy" style="font-family:var(--font-body);font-size:0.82rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:99px;cursor:pointer;transition:var(--transition);">🌀 Crazy Idea</button>
+  </div>
+
+  <div id="thoughts-list"></div>
+
+  <!-- Add thought CTA -->
+  <div class="write-box" style="margin-top:40px;">
+    <div style="font-size:2rem;margin-bottom:12px;">✍️</div>
+    <h3 style="font-family:var(--font-disp);font-size:1.3rem;margin-bottom:8px;">This is Aayush's space</h3>
+    <p style="font-size:0.88rem;color:var(--text2);max-width:400px;margin:0 auto;">New thoughts get added here whenever something is worth writing down. Check back often — the best ideas come at 2am.</p>
+  </div>
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:40px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+  <a href="../index.html" style="font-family:var(--font-disp);font-size:1rem;font-weight:700;color:var(--text2);">Aayush Insights</a>
+  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2024 · Thoughts by Aayush #7539</span>
+  <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);opacity:0.5;">#7539</span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script>
+// ── YOUR THOUGHTS ─────────────────────────────────────────────
+// To add a new thought: add an object to this array.
+// type options: "thought" | "opinion" | "question" | "experience" | "crazy"
+const THOUGHTS = [
+  {
+    type: "crazy",
+    typeLabel: "🌀 Crazy Idea",
+    text: "What if consciousness is just what it feels like to be a pattern that got complex enough to model itself? Like — the universe folded back on itself and we are the fold. That is a lot to think about at midnight.",
+    date: "2024"
+  },
+  {
+    type: "question",
+    typeLabel: "❓ Question",
+    text: "If every atom in my body is replaced over years, am I the same person I was five years ago? And if not — who was that person, and where did they go?",
+    date: "2024"
+  },
+  {
+    type: "opinion",
+    typeLabel: "🧠 Opinion",
+    text: "Most people are not lazy. They are just doing tasks that don't connect to anything they actually care about. Give someone a reason and watch them work 18 hours straight without complaining.",
+    date: "2024"
+  },
+  {
+    type: "thought",
+    typeLabel: "💭 Thought",
+    text: "The guitar is honest. You can't fake it. Either your fingers are where they need to be or they're not. The sound tells the truth every single time. I respect that more than most things.",
+    date: "2024"
+  },
+  {
+    type: "crazy",
+    typeLabel: "🌀 Crazy Idea",
+    text: "What if the universe is not infinite but just loops back on itself at a scale so large we can never detect the edge? We'd be living inside the world's biggest illusion of infinity. And we'd never know.",
+    date: "2024"
+  },
+  {
+    type: "opinion",
+    typeLabel: "🧠 Opinion",
+    text: "Cybersecurity is not about technology. It is about human psychology. Every hack exploits a person before it exploits a system. The weak point is always trust.",
+    date: "2024"
+  },
+  {
+    type: "experience",
+    typeLabel: "🌟 Experience",
+    text: "There is a specific feeling when you finally understand something you've been confused about for weeks. It is not just relief — it feels like the universe briefly made sense. I chase that feeling a lot.",
+    date: "2024"
+  },
+  {
+    type: "question",
+    typeLabel: "❓ Question",
+    text: "Why do we find some combinations of sound beautiful and others painful? Music is just air pressure waves. So why does a minor chord feel sad? Who decided that — and when did we all agree?",
+    date: "2024"
+  },
+  {
+    type: "thought",
+    typeLabel: "💭 Thought",
+    text: "Small steps sound boring until you realise that every mountain was climbed one step at a time. Nobody teleports to the top. The only people who never make it are the ones who stop.",
+    date: "2024"
+  },
+  {
+    type: "crazy",
+    typeLabel: "🌀 Crazy Idea",
+    text: "What if we are the most advanced civilisation that has ever existed in this part of the universe and there is genuinely nobody out there to contact? The silence would not be eerie — it would be the loneliest thing imaginable.",
+    date: "2024"
+  }
+];
+
+let currentType = 'all';
+
+function renderThoughts() {
+  const list = document.getElementById('thoughts-list');
+  const filtered = THOUGHTS.filter(t => currentType === 'all' || t.type === currentType);
+  list.innerHTML = filtered.map((t, i) => `
+    <div class="thought-card" style="opacity:0;transform:translateY(16px);transition:opacity 0.4s ease ${i*0.06}s,transform 0.4s ease ${i*0.06}s,border-color 0.3s">
+      <div class="thought-type">${t.typeLabel}</div>
+      <p class="thought-text">${t.text}</p>
+      <div class="thought-meta">
+        <span class="thought-date">— Aayush · ${t.date}</span>
+      </div>
+    </div>`).join('');
+  setTimeout(() => {
+    list.querySelectorAll('.thought-card').forEach(c => { c.style.opacity='1'; c.style.transform='translateY(0)'; });
+  }, 50);
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('active'); b.style.background='var(--bg2)'; b.style.color='var(--text2)'; b.style.borderColor='var(--border)'; });
+    btn.classList.add('active'); btn.style.background='var(--gold-dim)'; btn.style.color='var(--gold-lt)'; btn.style.borderColor='var(--gold-dim)';
+    currentType = btn.dataset.type;
+    renderThoughts();
+  });
+});
+
+renderThoughts();
+</script>
 </body>
 </html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume Builder — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .resume-section { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:24px; margin-bottom:16px; }
+    .resume-section-title { font-size:0.72rem; color:var(--gold); font-family:var(--font-mono); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:16px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+    .form-group { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+    .form-label { font-size:0.75rem; color:var(--text3); font-family:var(--font-mono); letter-spacing:0.1em; text-transform:uppercase; }
+    .form-input { background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-sm); padding:8px 12px; font-family:var(--font-body); font-size:0.88rem; color:var(--text); outline:none; transition:var(--transition); }
+    .form-input:focus { border-color:var(--gold-dim); box-shadow:0 0 0 2px var(--gold-glow); }
+    .form-textarea { min-height:80px; resize:vertical; }
+    .entry-card { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r-md); padding:16px; margin-bottom:10px; position:relative; }
+    .remove-btn { position:absolute; top:10px; right:10px; font-size:0.75rem; color:var(--text3); padding:3px 8px; border:1px solid var(--border); border-radius:4px; background:none; cursor:pointer; }
+    @media(max-width:600px){ .form-row{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:860px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">📋</div>
+    <h1 class="tool-page-title">Resume Builder</h1>
+    <p class="tool-page-desc">Fill in your details and download a clean, professional resume as PDF.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Personal Info -->
+    <div class="resume-section">
+      <div class="resume-section-title">Personal Information</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="r-name" placeholder="Aayush Kurmi" /></div>
+        <div class="form-group"><label class="form-label">Job Title</label><input class="form-input" id="r-title" placeholder="Web Developer" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="r-email" placeholder="aayush@email.com" /></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="r-phone" placeholder="+91 9876543210" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="r-location" placeholder="City, Country" /></div>
+        <div class="form-group"><label class="form-label">LinkedIn / Website</label><input class="form-input" id="r-link" placeholder="linkedin.com/in/username" /></div>
+      </div>
+      <div class="form-group"><label class="form-label">Professional Summary</label><textarea class="form-input form-textarea" id="r-summary" placeholder="A brief 2-3 sentence summary about yourself..."></textarea></div>
+    </div>
+
+    <!-- Experience -->
+    <div class="resume-section">
+      <div class="resume-section-title">Work Experience</div>
+      <div id="exp-list"></div>
+      <button class="toolbar-btn primary" id="btn-add-exp">+ Add Experience</button>
+    </div>
+
+    <!-- Education -->
+    <div class="resume-section">
+      <div class="resume-section-title">Education</div>
+      <div id="edu-list"></div>
+      <button class="toolbar-btn primary" id="btn-add-edu">+ Add Education</button>
+    </div>
+
+    <!-- Skills -->
+    <div class="resume-section">
+      <div class="resume-section-title">Skills</div>
+      <div class="form-group"><label class="form-label">Skills (comma separated)</label><input class="form-input" id="r-skills" placeholder="HTML, CSS, JavaScript, Cybersecurity, Guitar..." /></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-download" style="padding:12px 32px;font-size:1rem;">⬇ Download Resume PDF</button>
+      <button class="toolbar-btn" id="btn-preview">Preview</button>
+    </div>
+    <div id="status" style="margin-top:12px;"></div>
+
+    <!-- Preview -->
+    <div id="preview-area" style="display:none;margin-top:24px;">
+      <div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:12px;">PREVIEW</div>
+      <div id="resume-preview" style="background:white;color:#111;padding:40px;border-radius:var(--r-md);font-family:Georgia,serif;line-height:1.5;"></div>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+let expCount=0, eduCount=0;
+
+function addExp() {
+  const id=expCount++;
+  const div=document.createElement('div');
+  div.className='entry-card'; div.id=`exp-${id}`;
+  div.innerHTML=`<button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Job Title</label><input class="form-input" placeholder="Frontend Developer" id="exp-title-${id}"/></div>
+      <div class="form-group"><label class="form-label">Company</label><input class="form-input" placeholder="Company Name" id="exp-company-${id}"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" placeholder="Jan 2023" id="exp-start-${id}"/></div>
+      <div class="form-group"><label class="form-label">End Date</label><input class="form-input" placeholder="Present" id="exp-end-${id}"/></div>
+    </div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input form-textarea" placeholder="Key responsibilities and achievements..." id="exp-desc-${id}"></textarea></div>`;
+  document.getElementById('exp-list').appendChild(div);
+}
+
+function addEdu() {
+  const id=eduCount++;
+  const div=document.createElement('div');
+  div.className='entry-card'; div.id=`edu-${id}`;
+  div.innerHTML=`<button class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Degree / Course</label><input class="form-input" placeholder="B.Tech Computer Science" id="edu-degree-${id}"/></div>
+      <div class="form-group"><label class="form-label">Institution</label><input class="form-input" placeholder="University Name" id="edu-inst-${id}"/></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Year</label><input class="form-input" placeholder="2021 – 2025" id="edu-year-${id}"/></div>
+      <div class="form-group"><label class="form-label">Grade / Score</label><input class="form-input" placeholder="8.5 CGPA" id="edu-grade-${id}"/></div>
+    </div>`;
+  document.getElementById('edu-list').appendChild(div);
+}
+
+document.getElementById('btn-add-exp').addEventListener('click', addExp);
+document.getElementById('btn-add-edu').addEventListener('click', addEdu);
+addExp(); addEdu();
+
+function getResumeData() {
+  const exps=[], edus=[];
+  document.querySelectorAll('[id^="exp-title-"]').forEach(el=>{
+    const i=el.id.split('-')[2];
+    if(el.value) exps.push({title:el.value,company:document.getElementById(`exp-company-${i}`)?.value||'',start:document.getElementById(`exp-start-${i}`)?.value||'',end:document.getElementById(`exp-end-${i}`)?.value||'',desc:document.getElementById(`exp-desc-${i}`)?.value||''});
+  });
+  document.querySelectorAll('[id^="edu-degree-"]').forEach(el=>{
+    const i=el.id.split('-')[2];
+    if(el.value) edus.push({degree:el.value,inst:document.getElementById(`edu-inst-${i}`)?.value||'',year:document.getElementById(`edu-year-${i}`)?.value||'',grade:document.getElementById(`edu-grade-${i}`)?.value||''});
+  });
+  return {
+    name:document.getElementById('r-name').value||'Your Name',
+    title:document.getElementById('r-title').value||'',
+    email:document.getElementById('r-email').value||'',
+    phone:document.getElementById('r-phone').value||'',
+    location:document.getElementById('r-location').value||'',
+    link:document.getElementById('r-link').value||'',
+    summary:document.getElementById('r-summary').value||'',
+    skills:document.getElementById('r-skills').value||'',
+    exps, edus
+  };
+}
+
+function buildPreviewHTML(d) {
+  const skillTags = d.skills ? d.skills.split(',').map(s=>`<span style="display:inline-block;background:#f0f0f0;color:#333;padding:3px 10px;border-radius:4px;font-size:11px;margin:2px;">${s.trim()}</span>`).join('') : '';
+  const expHTML = d.exps.map(e=>`<div style="margin-bottom:12px;"><div style="font-weight:bold;">${e.title} — ${e.company}</div><div style="font-size:12px;color:#666;">${e.start}${e.end?' – '+e.end:''}</div><div style="font-size:13px;margin-top:4px;">${e.desc}</div></div>`).join('');
+  const eduHTML = d.edus.map(e=>`<div style="margin-bottom:10px;"><div style="font-weight:bold;">${e.degree}</div><div>${e.inst}${e.year?' · '+e.year:''} ${e.grade?'· '+e.grade:''}</div></div>`).join('');
+  return `<div style="max-width:700px;margin:0 auto;font-family:Georgia,serif;font-size:14px;color:#111;">
+    <div style="border-bottom:2px solid #111;padding-bottom:12px;margin-bottom:16px;">
+      <h1 style="font-size:28px;margin:0 0 4px;">${d.name}</h1>
+      ${d.title?`<div style="font-size:15px;color:#555;">${d.title}</div>`:''}
+      <div style="font-size:12px;color:#666;margin-top:6px;">${[d.email,d.phone,d.location,d.link].filter(Boolean).join(' · ')}</div>
+    </div>
+    ${d.summary?`<div style="margin-bottom:16px;"><h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #ddd;padding-bottom:4px;">Summary</h3><p style="font-size:13px;">${d.summary}</p></div>`:''}
+    ${d.exps.length?`<div style="margin-bottom:16px;"><h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #ddd;padding-bottom:4px;">Experience</h3>${expHTML}</div>`:''}
+    ${d.edus.length?`<div style="margin-bottom:16px;"><h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #ddd;padding-bottom:4px;">Education</h3>${eduHTML}</div>`:''}
+    ${d.skills?`<div><h3 style="font-size:13px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #ddd;padding-bottom:4px;">Skills</h3><div style="margin-top:8px;">${skillTags}</div></div>`:''}
+  </div>`;
+}
+
+document.getElementById('btn-preview').addEventListener('click',()=>{
+  const d=getResumeData();
+  document.getElementById('resume-preview').innerHTML=buildPreviewHTML(d);
+  document.getElementById('preview-area').style.display='block';
+  document.getElementById('preview-area').scrollIntoView({behavior:'smooth'});
+});
+
+document.getElementById('btn-download').addEventListener('click',()=>{
+  const d=getResumeData();
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF({unit:'mm',format:'a4'});
+  const m=18,pw=210-m*2;
+  let y=m;
+  const line=(text,sz,bold,color)=>{pdf.setFontSize(sz);pdf.setFont('helvetica',bold?'bold':'normal');pdf.setTextColor(color||'#111');const lines=pdf.splitTextToSize(text,pw);pdf.text(lines,m,y);y+=lines.length*(sz*0.4)+1;};
+  const rule=()=>{pdf.setDrawColor(180);pdf.line(m,y,210-m,y);y+=3;};
+
+  line(d.name,22,true,'#0a0a0f');y+=1;
+  if(d.title){line(d.title,12,false,'#555');y+=1;}
+  const contact=[d.email,d.phone,d.location,d.link].filter(Boolean).join('  ·  ');
+  if(contact){line(contact,9,false,'#777');y+=1;}
+  rule();
+  if(d.summary){line('SUMMARY',9,true,'#555');y+=1;rule();line(d.summary,10);y+=3;}
+  if(d.exps.length){line('EXPERIENCE',9,true,'#555');y+=1;rule();d.exps.forEach(e=>{line(`${e.title} — ${e.company}`,11,true);line(`${e.start}${e.end?' – '+e.end:''}`,9,false,'#777');if(e.desc)line(e.desc,10);y+=3;});}
+  if(d.edus.length){line('EDUCATION',9,true,'#555');y+=1;rule();d.edus.forEach(e=>{line(e.degree,11,true);line(`${e.inst}${e.year?' · '+e.year:''} ${e.grade?'· '+e.grade:''}`,10);y+=3;});}
+  if(d.skills){line('SKILLS',9,true,'#555');y+=1;rule();line(d.skills,10);}
+
+  pdf.save(`${d.name.replace(/\s+/g,'-')}-Resume.pdf`);
+  document.getElementById('status').innerHTML='<span class="result-badge success">✓ Resume downloaded!</span>';
+});
+</script>
+</body>
+</html>

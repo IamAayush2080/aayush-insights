@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unit Converter — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">⚖️</div>
+    <h1 class="tool-page-title">Unit Converter</h1>
+    <p class="tool-page-desc">Convert between length, weight, temperature, area, speed, data and more.</p>
+  </div>
+  <div class="tool-page-body">
+    <!-- Category tabs -->
+    <div class="tools-filter" style="margin-bottom:24px;">
+      <button class="filter-btn active" data-cat="length">📏 Length</button>
+      <button class="filter-btn" data-cat="weight">⚖️ Weight</button>
+      <button class="filter-btn" data-cat="temp">🌡️ Temperature</button>
+      <button class="filter-btn" data-cat="area">📐 Area</button>
+      <button class="filter-btn" data-cat="speed">💨 Speed</button>
+      <button class="filter-btn" data-cat="data">💾 Data</button>
+      <button class="filter-btn" data-cat="time">⏱️ Time</button>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;">
+        <div>
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;display:block;margin-bottom:6px;">FROM</label>
+          <select class="tool-select" id="from-unit" style="width:100%;margin-bottom:10px;"></select>
+          <input type="number" id="from-val" class="tool-input" style="width:100%;font-size:1.1rem;" value="1" />
+        </div>
+        <button id="btn-swap" style="background:var(--bg3);border:1px solid var(--border2);border-radius:50%;width:40px;height:40px;font-size:1.2rem;cursor:pointer;margin-top:24px;">⇄</button>
+        <div>
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;display:block;margin-bottom:6px;">TO</label>
+          <select class="tool-select" id="to-unit" style="width:100%;margin-bottom:10px;"></select>
+          <div id="result-val" style="font-family:var(--font-disp);font-size:1.8rem;font-weight:700;color:var(--gold);min-height:2.5rem;padding:8px 14px;background:var(--bg3);border-radius:var(--r-sm);border:1px solid var(--border);">—</div>
+        </div>
+      </div>
+      <div id="formula" style="margin-top:16px;font-size:0.82rem;color:var(--text3);font-family:var(--font-mono);"></div>
+    </div>
+
+    <!-- All results table -->
+    <div class="tool-section-card">
+      <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">ALL CONVERSIONS</span></div>
+      <div id="all-results" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;"></div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script>
+const units = {
+  length: {
+    label:'Length',
+    units:['Meter','Kilometer','Centimeter','Millimeter','Mile','Yard','Foot','Inch','Nautical Mile'],
+    toBase:{Meter:1,Kilometer:1000,Centimeter:0.01,Millimeter:0.001,Mile:1609.344,Yard:0.9144,Foot:0.3048,Inch:0.0254,'Nautical Mile':1852}
+  },
+  weight: {
+    label:'Weight',
+    units:['Kilogram','Gram','Milligram','Pound','Ounce','Ton','Stone'],
+    toBase:{Kilogram:1,Gram:0.001,Milligram:0.000001,Pound:0.453592,Ounce:0.0283495,Ton:1000,Stone:6.35029}
+  },
+  temp: {
+    label:'Temperature',
+    units:['Celsius','Fahrenheit','Kelvin'],
+    toBase:null // special handling
+  },
+  area: {
+    label:'Area',
+    units:['Square Meter','Square Kilometer','Square Mile','Square Yard','Square Foot','Hectare','Acre'],
+    toBase:{'Square Meter':1,'Square Kilometer':1e6,'Square Mile':2589988,'Square Yard':0.836127,'Square Foot':0.092903,Hectare:10000,Acre:4046.86}
+  },
+  speed: {
+    label:'Speed',
+    units:['m/s','km/h','mph','Knot','ft/s'],
+    toBase:{'m/s':1,'km/h':0.277778,'mph':0.44704,'Knot':0.514444,'ft/s':0.3048}
+  },
+  data: {
+    label:'Data',
+    units:['Bit','Byte','Kilobyte','Megabyte','Gigabyte','Terabyte','Petabyte'],
+    toBase:{Bit:0.125,Byte:1,Kilobyte:1024,Megabyte:1048576,Gigabyte:1073741824,Terabyte:1099511627776,Petabyte:1125899906842624}
+  },
+  time: {
+    label:'Time',
+    units:['Second','Minute','Hour','Day','Week','Month','Year'],
+    toBase:{Second:1,Minute:60,Hour:3600,Day:86400,Week:604800,Month:2629800,Year:31557600}
+  }
+};
+
+let currentCat = 'length';
+
+function convertTemp(val, from, to) {
+  let celsius;
+  if (from==='Celsius') celsius=val;
+  else if (from==='Fahrenheit') celsius=(val-32)*5/9;
+  else celsius=val-273.15;
+  if (to==='Celsius') return celsius;
+  if (to==='Fahrenheit') return celsius*9/5+32;
+  return celsius+273.15;
+}
+
+function populate(cat) {
+  currentCat = cat;
+  const u = units[cat];
+  const opts = u.units.map(n=>`<option value="${n}">${n}</option>`).join('');
+  document.getElementById('from-unit').innerHTML = opts;
+  document.getElementById('to-unit').innerHTML = opts;
+  document.getElementById('to-unit').selectedIndex = 1;
+  convert();
+}
+
+function convert() {
+  const val = parseFloat(document.getElementById('from-val').value);
+  const from = document.getElementById('from-unit').value;
+  const to   = document.getElementById('to-unit').value;
+  if (isNaN(val)) return;
+
+  const u = units[currentCat];
+  let result;
+  if (currentCat === 'temp') {
+    result = convertTemp(val, from, to);
+  } else {
+    result = (val * u.toBase[from]) / u.toBase[to];
+  }
+
+  const fmt = v => parseFloat(v.toPrecision(8)).toLocaleString();
+  document.getElementById('result-val').textContent = fmt(result);
+  document.getElementById('formula').textContent = `${val} ${from} = ${fmt(result)} ${to}`;
+
+  // All results
+  const allHTML = u.units.map(unit => {
+    let r;
+    if (currentCat === 'temp') r = convertTemp(val, from, unit);
+    else r = (val * u.toBase[from]) / u.toBase[unit];
+    return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;">
+      <div style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);">${unit}</div>
+      <div style="font-size:0.95rem;color:${unit===to?'var(--gold)':'var(--text)'};font-weight:${unit===to?'600':'400'};">${fmt(r)}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('all-results').innerHTML = allHTML;
+}
+
+// Category filter
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    populate(btn.dataset.cat);
+  });
+});
+
+document.getElementById('from-val').addEventListener('input', convert);
+document.getElementById('from-unit').addEventListener('change', convert);
+document.getElementById('to-unit').addEventListener('change', convert);
+document.getElementById('btn-swap').addEventListener('click', () => {
+  const f=document.getElementById('from-unit').value, t=document.getElementById('to-unit').value;
+  document.getElementById('from-unit').value=t;
+  document.getElementById('to-unit').value=f;
+  convert();
+});
+
+populate('length');
+</script>
+</body>
+</html>

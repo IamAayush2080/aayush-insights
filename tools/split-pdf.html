@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Split PDF — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">✂️</div>
+    <h1 class="tool-page-title">Split PDF</h1>
+    <p class="tool-page-desc">Split a PDF into individual pages or extract a page range. All in your browser.</p>
+  </div>
+  <div class="tool-page-body">
+    <div id="drop-zone" style="border:2px dashed var(--border2);border-radius:var(--r-lg);padding:48px;text-align:center;cursor:pointer;transition:var(--transition);margin-bottom:20px;">
+      <div style="font-size:2.5rem;margin-bottom:12px;">📄</div>
+      <p style="color:var(--text2);margin-bottom:8px;">Drop a PDF here or click to upload</p>
+      <input type="file" id="file-input" accept=".pdf" style="display:none;" />
+    </div>
+
+    <div id="controls" style="display:none;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:20px;">
+        <div style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:6px;">FILE INFO</div>
+        <div id="file-info" style="font-size:0.9rem;color:var(--text2);"></div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;display:block;margin-bottom:12px;">SPLIT MODE</label>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <label class="checkbox-item"><input type="radio" name="mode" value="all" checked> Extract every page as a separate PDF</label>
+          <label class="checkbox-item"><input type="radio" name="mode" value="range"> Extract a page range</label>
+        </div>
+      </div>
+
+      <div id="range-inputs" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:20px;">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">FROM PAGE</label>
+            <input type="number" id="from-page" class="tool-input" style="width:100px;" value="1" min="1" />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">TO PAGE</label>
+            <input type="number" id="to-page" class="tool-input" style="width:100px;" value="1" min="1" />
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-split" style="padding:10px 28px;">Split PDF →</button>
+        <button class="toolbar-btn" id="btn-reset">Reset</button>
+      </div>
+      <div id="status" style="margin-top:12px;"></div>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+let pdfBytes, totalPages;
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor='var(--gold)'; });
+dropZone.addEventListener('dragleave', () => dropZone.style.borderColor='var(--border2)');
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor='var(--border2)'; loadFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+document.querySelectorAll('input[name="mode"]').forEach(r => {
+  r.addEventListener('change', () => {
+    document.getElementById('range-inputs').style.display = r.value === 'range' ? 'block' : 'none';
+  });
+});
+
+async function loadFile(file) {
+  if (!file || file.type !== 'application/pdf') return;
+  pdfBytes = await file.arrayBuffer();
+  const doc = await PDFLib.PDFDocument.load(pdfBytes);
+  totalPages = doc.getPageCount();
+  document.getElementById('file-info').textContent = `${file.name} · ${totalPages} pages · ${(file.size/1024).toFixed(1)} KB`;
+  document.getElementById('to-page').value = totalPages;
+  document.getElementById('to-page').max = totalPages;
+  document.getElementById('from-page').max = totalPages;
+  document.getElementById('controls').style.display = 'block';
+  dropZone.style.display = 'none';
+}
+
+document.getElementById('btn-split').addEventListener('click', async () => {
+  const st = document.getElementById('status');
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+  st.innerHTML = '<span class="result-badge info">⏳ Splitting PDF...</span>';
+
+  try {
+    const srcDoc = await PDFLib.PDFDocument.load(pdfBytes);
+    if (mode === 'all') {
+      for (let i = 0; i < totalPages; i++) {
+        const newDoc = await PDFLib.PDFDocument.create();
+        const [page] = await newDoc.copyPages(srcDoc, [i]);
+        newDoc.addPage(page);
+        const bytes = await newDoc.save();
+        download(bytes, `page-${i+1}.pdf`);
+      }
+      st.innerHTML = `<span class="result-badge success">✓ Saved ${totalPages} separate PDFs</span>`;
+    } else {
+      const from = parseInt(document.getElementById('from-page').value) - 1;
+      const to   = parseInt(document.getElementById('to-page').value) - 1;
+      const newDoc = await PDFLib.PDFDocument.create();
+      const indices = [...Array(to - from + 1)].map((_,i) => from + i);
+      const pages = await newDoc.copyPages(srcDoc, indices);
+      pages.forEach(p => newDoc.addPage(p));
+      const bytes = await newDoc.save();
+      download(bytes, `pages-${from+1}-to-${to+1}.pdf`);
+      st.innerHTML = `<span class="result-badge success">✓ Extracted pages ${from+1}–${to+1}</span>`;
+    }
+  } catch(e) { st.innerHTML = `<span class="result-badge warn">✗ Error: ${e.message}</span>`; }
+});
+
+function download(bytes, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([bytes], {type:'application/pdf'}));
+  a.download = name; a.click();
+}
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  document.getElementById('controls').style.display = 'none';
+  dropZone.style.display = 'block';
+  fileInput.value = '';
+  document.getElementById('status').innerHTML = '';
+});
+</script>
+</body>
+</html>
