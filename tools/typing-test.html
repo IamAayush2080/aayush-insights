@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typing Speed Test — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .typing-display {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--r-lg); padding:24px;
+      font-family:var(--font-mono); font-size:1.1rem;
+      line-height:1.9; letter-spacing:0.03em;
+      min-height:120px; margin-bottom:16px;
+      user-select:none; cursor:text;
+    }
+    .char-pending { color:var(--text3); }
+    .char-correct { color:var(--text); }
+    .char-wrong   { color:#f87171; background:rgba(248,113,113,0.15); border-radius:2px; }
+    .char-cursor  { border-left:2px solid var(--gold); animation:blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .wpm-display { font-family:var(--font-disp); font-size:3rem; font-weight:900; color:var(--gold); line-height:1; }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:760px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">⌨️</div>
+    <h1 class="tool-page-title">Typing Speed Test</h1>
+    <p class="tool-page-desc">Test your WPM and accuracy. Click the text and start typing.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Stats row -->
+    <div class="stat-row" style="margin-bottom:20px;">
+      <div class="stat-box"><div class="stat-box-num wpm-display" id="stat-wpm">0</div><div class="stat-box-label">WPM</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="stat-acc">100%</div><div class="stat-box-label">Accuracy</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="stat-time">60</div><div class="stat-box-label">Seconds</div></div>
+      <div class="stat-box"><div class="stat-box-num" id="stat-errors">0</div><div class="stat-box-label">Errors</div></div>
+    </div>
+
+    <!-- Duration selector -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;">
+      <span style="font-size:0.82rem;color:var(--text2);">Duration:</span>
+      <button class="filter-btn" data-dur="30">30s</button>
+      <button class="filter-btn active" data-dur="60">60s</button>
+      <button class="filter-btn" data-dur="120">2 min</button>
+      <button class="filter-btn" style="margin-left:auto;" id="btn-restart">↺ Restart</button>
+    </div>
+
+    <!-- Typing display -->
+    <div class="typing-display" id="typing-display" tabindex="0" onclick="this.focus()">
+      Click here and start typing...
+    </div>
+
+    <!-- Hidden input -->
+    <input type="text" id="hidden-input" style="position:absolute;opacity:0;pointer-events:none;" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
+    <!-- Result -->
+    <div id="result-screen" style="display:none;text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:40px;margin-top:16px;">
+      <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:16px;">✦ TEST COMPLETE</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
+        <div><div class="wpm-display" id="final-wpm">0</div><div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;margin-top:4px;">WPM</div></div>
+        <div><div class="wpm-display" style="font-size:2rem;" id="final-acc">0%</div><div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;margin-top:4px;">Accuracy</div></div>
+        <div><div class="wpm-display" style="font-size:2rem;" id="final-chars">0</div><div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;margin-top:4px;">Characters</div></div>
+        <div><div class="wpm-display" style="font-size:2rem;" id="final-errors">0</div><div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;margin-top:4px;">Errors</div></div>
+      </div>
+      <div id="rank-badge" style="margin-bottom:20px;"></div>
+      <button class="btn-primary" onclick="restart()" style="padding:12px 40px;">Try Again →</button>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script>
+const TEXTS = [
+  "The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. How vexingly quick daft zebras jump. The five boxing wizards jump quickly.",
+  "Learning to type faster takes consistent practice every single day. Focus on accuracy first and speed will follow naturally over time. Never sacrifice precision for pace.",
+  "In a world driven by technology, the ability to communicate clearly and quickly through writing is one of the most valuable skills a person can develop.",
+  "Cybersecurity is not just about protecting systems. It is about understanding human behaviour, building trust, and thinking like both a defender and an attacker at the same time.",
+  "The universe began as a singularity smaller than an atom. Everything that exists — every star, every planet, every thought — expanded from that single incomprehensible point.",
+  "Small consistent steps compound into extraordinary results over time. The person who improves by one percent every day will be thirty seven times better by the end of the year.",
+  "Music is a language that exists beyond words. A single chord progression can express what pages of writing cannot. That is the extraordinary power of sound arranged in time.",
+];
+
+let words, typed=[], pos=0, errors=0, started=false, timer=null, duration=60, remaining=60;
+
+function getWords() {
+  const text = TEXTS[Math.floor(Math.random()*TEXTS.length)];
+  return text.split('');
+}
+
+function render() {
+  const display = document.getElementById('typing-display');
+  display.innerHTML = words.map((c,i) => {
+    let cls = 'char-pending';
+    if (i < typed.length) cls = typed[i]===c ? 'char-correct' : 'char-wrong';
+    if (i === typed.length) cls += ' char-cursor';
+    return `<span class="${cls}">${c==' '?'&nbsp;':c}</span>`;
+  }).join('');
+}
+
+function calcWPM() {
+  const elapsed = (duration - remaining) / 60;
+  if (elapsed <= 0) return 0;
+  const correctChars = typed.filter((c,i) => c===words[i]).length;
+  return Math.round((correctChars/5)/elapsed);
+}
+
+function updateStats() {
+  const wpm = calcWPM();
+  const totalTyped = typed.length;
+  const correct = typed.filter((c,i)=>c===words[i]).length;
+  const acc = totalTyped > 0 ? Math.round((correct/totalTyped)*100) : 100;
+  document.getElementById('stat-wpm').textContent = wpm;
+  document.getElementById('stat-acc').textContent = acc+'%';
+  document.getElementById('stat-errors').textContent = errors;
+}
+
+function finish() {
+  clearInterval(timer);
+  started = false;
+  const wpm = calcWPM();
+  const correct = typed.filter((c,i)=>c===words[i]).length;
+  const acc = typed.length > 0 ? Math.round((correct/typed.length)*100) : 100;
+  document.getElementById('final-wpm').textContent = wpm;
+  document.getElementById('final-acc').textContent = acc+'%';
+  document.getElementById('final-chars').textContent = correct;
+  document.getElementById('final-errors').textContent = errors;
+  const rank = wpm>=80?'🏆 Expert':wpm>=60?'⭐ Advanced':wpm>=40?'✅ Intermediate':wpm>=20?'📈 Beginner':'🌱 Keep Practising';
+  document.getElementById('rank-badge').innerHTML = `<span class="result-badge info">${rank}</span>`;
+  document.getElementById('result-screen').style.display='block';
+  document.getElementById('typing-display').style.display='none';
+}
+
+function restart() {
+  clearInterval(timer);
+  words = getWords();
+  typed = []; pos = 0; errors = 0; started = false;
+  remaining = duration;
+  document.getElementById('stat-time').textContent = duration;
+  document.getElementById('stat-wpm').textContent = '0';
+  document.getElementById('stat-acc').textContent = '100%';
+  document.getElementById('stat-errors').textContent = '0';
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('typing-display').style.display='block';
+  render();
+  document.getElementById('typing-display').focus();
+}
+
+document.getElementById('typing-display').addEventListener('focus', () => {
+  document.getElementById('hidden-input').focus();
+});
+
+document.getElementById('hidden-input').addEventListener('keydown', e => {
+  if (e.key === 'Tab') { e.preventDefault(); return; }
+  if (!started && e.key.length===1) {
+    started = true;
+    timer = setInterval(() => {
+      remaining--;
+      document.getElementById('stat-time').textContent = remaining;
+      if (remaining <= 0) finish();
+    }, 1000);
+  }
+  if (e.key === 'Backspace') {
+    if (typed.length > 0) typed.pop();
+  } else if (e.key.length === 1 && typed.length < words.length) {
+    typed.push(e.key);
+    if (e.key !== words[typed.length-1]) errors++;
+    if (typed.length === words.length) finish();
+  }
+  updateStats(); render();
+  e.preventDefault();
+});
+
+document.querySelectorAll('[data-dur]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-dur]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    duration = parseInt(btn.dataset.dur);
+    restart();
+  });
+});
+
+document.getElementById('btn-restart').addEventListener('click', restart);
+restart();
+</script>
+</body>
+</html>

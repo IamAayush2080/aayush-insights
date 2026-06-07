@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scientific Calculator — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .calc-wrap { max-width:420px; margin:0 auto; }
+    .calc-display {
+      background:var(--bg3); border:1px solid var(--border2);
+      border-radius:var(--r-lg); padding:20px 24px;
+      margin-bottom:12px; text-align:right;
+    }
+    .calc-expr { font-family:var(--font-mono); font-size:0.82rem; color:var(--text3); min-height:1.2em; margin-bottom:6px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .calc-value { font-family:var(--font-disp); font-size:2.6rem; font-weight:700; color:var(--text); line-height:1; overflow:hidden; text-overflow:ellipsis; }
+    .calc-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+    .calc-btn {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--r-md); padding:14px 8px;
+      font-family:var(--font-body); font-size:0.9rem;
+      color:var(--text2); cursor:pointer; transition:var(--transition);
+      text-align:center; font-weight:400;
+    }
+    .calc-btn:hover { background:var(--bg3); border-color:var(--border2); color:var(--text); }
+    .calc-btn:active { transform:scale(0.95); }
+    .calc-btn.op { color:var(--gold); }
+    .calc-btn.fn { font-size:0.78rem; color:var(--accent); }
+    .calc-btn.eq { background:var(--gold); color:var(--bg); border-color:var(--gold); font-weight:600; }
+    .calc-btn.eq:hover { background:var(--gold-lt); }
+    .calc-btn.cls { color:#f87171; }
+    .calc-btn.span2 { grid-column:span 2; }
+    .history-item { font-family:var(--font-mono); font-size:0.82rem; color:var(--text2); padding:6px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+    .history-item:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🧮</div>
+    <h1 class="tool-page-title">Scientific Calculator</h1>
+    <p class="tool-page-desc">Full scientific calculator with history — sin, cos, log, powers and more.</p>
+  </div>
+  <div class="tool-page-body">
+    <div style="display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start;">
+
+      <div class="calc-wrap" style="max-width:100%;">
+        <div class="calc-display">
+          <div class="calc-expr" id="calc-expr"></div>
+          <div class="calc-value" id="calc-value">0</div>
+        </div>
+        <div class="calc-grid">
+          <!-- Row 1 -->
+          <button class="calc-btn fn" onclick="calcFn('sin')">sin</button>
+          <button class="calc-btn fn" onclick="calcFn('cos')">cos</button>
+          <button class="calc-btn fn" onclick="calcFn('tan')">tan</button>
+          <button class="calc-btn fn" onclick="calcFn('log')">log</button>
+          <button class="calc-btn fn" onclick="calcFn('ln')">ln</button>
+          <!-- Row 2 -->
+          <button class="calc-btn fn" onclick="calcFn('sqrt')">√</button>
+          <button class="calc-btn fn" onclick="calcFn('sq')">x²</button>
+          <button class="calc-btn fn" onclick="calcFn('cube')">x³</button>
+          <button class="calc-btn fn" onclick="input('^')">xʸ</button>
+          <button class="calc-btn fn" onclick="calcFn('abs')">|x|</button>
+          <!-- Row 3 -->
+          <button class="calc-btn fn" onclick="input('π')">π</button>
+          <button class="calc-btn fn" onclick="input('e')">e</button>
+          <button class="calc-btn fn" onclick="input('(')">( </button>
+          <button class="calc-btn fn" onclick="input(')')"> )</button>
+          <button class="calc-btn fn" onclick="calcFn('fact')">n!</button>
+          <!-- Row 4 -->
+          <button class="calc-btn cls" onclick="clearAll()">AC</button>
+          <button class="calc-btn cls" onclick="backspace()">⌫</button>
+          <button class="calc-btn fn" onclick="toggleSign()">+/-</button>
+          <button class="calc-btn fn" onclick="calcFn('pct')">%</button>
+          <button class="calc-btn op" onclick="input('/')">÷</button>
+          <!-- Row 5 -->
+          <button class="calc-btn" onclick="input('7')">7</button>
+          <button class="calc-btn" onclick="input('8')">8</button>
+          <button class="calc-btn" onclick="input('9')">9</button>
+          <button class="calc-btn op span2" onclick="input('*')">×</button>
+          <!-- Row 6 -->
+          <button class="calc-btn" onclick="input('4')">4</button>
+          <button class="calc-btn" onclick="input('5')">5</button>
+          <button class="calc-btn" onclick="input('6')">6</button>
+          <button class="calc-btn op span2" onclick="input('-')">−</button>
+          <!-- Row 7 -->
+          <button class="calc-btn" onclick="input('1')">1</button>
+          <button class="calc-btn" onclick="input('2')">2</button>
+          <button class="calc-btn" onclick="input('3')">3</button>
+          <button class="calc-btn op span2" onclick="input('+')">+</button>
+          <!-- Row 8 -->
+          <button class="calc-btn span2" onclick="input('0')">0</button>
+          <button class="calc-btn" onclick="input('.')">.</button>
+          <button class="calc-btn eq span2" onclick="calculate()">=</button>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.15em;">HISTORY</span>
+          <button class="toolbar-btn" onclick="clearHistory()" style="font-size:0.7rem;padding:3px 8px;">Clear</button>
+        </div>
+        <div id="history-list" style="max-height:360px;overflow-y:auto;">
+          <p style="font-size:0.82rem;color:var(--text3);text-align:center;padding:20px 0;">No history yet</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script>
+let expr = '', history = [];
+
+function updateDisplay() {
+  document.getElementById('calc-expr').textContent = expr || '';
+  document.getElementById('calc-value').textContent = expr ? expr.replace(/\*/g,'×').replace(/\//g,'÷') : '0';
+}
+
+function input(val) {
+  if (val === 'π') val = String(Math.PI);
+  else if (val === 'e') val = String(Math.E);
+  expr += val; updateDisplay();
+}
+
+function clearAll()  { expr=''; updateDisplay(); }
+function backspace() { expr=expr.slice(0,-1); updateDisplay(); }
+
+function toggleSign() {
+  if (!expr) return;
+  if (expr.startsWith('-')) expr=expr.slice(1);
+  else expr='-'+expr;
+  updateDisplay();
+}
+
+function calcFn(fn) {
+  try {
+    let val = expr ? eval(expr.replace(/\^/g,'**')) : 0;
+    const prev = expr;
+    if      (fn==='sin')  expr = String(Math.sin(val*Math.PI/180));
+    else if (fn==='cos')  expr = String(Math.cos(val*Math.PI/180));
+    else if (fn==='tan')  expr = String(Math.tan(val*Math.PI/180));
+    else if (fn==='log')  expr = String(Math.log10(val));
+    else if (fn==='ln')   expr = String(Math.log(val));
+    else if (fn==='sqrt') expr = String(Math.sqrt(val));
+    else if (fn==='sq')   expr = String(val*val);
+    else if (fn==='cube') expr = String(val*val*val);
+    else if (fn==='abs')  expr = String(Math.abs(val));
+    else if (fn==='pct')  expr = String(val/100);
+    else if (fn==='fact') { let f=1; for(let i=2;i<=val;i++)f*=i; expr=String(f); }
+    addHistory(`${fn}(${prev}) = ${expr}`);
+    updateDisplay();
+  } catch(e) { expr='Error'; updateDisplay(); }
+}
+
+function calculate() {
+  try {
+    const prev = expr;
+    const result = eval(expr.replace(/\^/g,'**'));
+    const formatted = parseFloat(result.toPrecision(12)).toString();
+    addHistory(`${prev} = ${formatted}`);
+    expr = formatted;
+    updateDisplay();
+  } catch(e) { expr='Error'; updateDisplay(); }
+}
+
+function addHistory(item) {
+  history.unshift(item);
+  if (history.length > 20) history.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  if (!history.length) { list.innerHTML='<p style="font-size:0.82rem;color:var(--text3);text-align:center;padding:20px 0;">No history yet</p>'; return; }
+  list.innerHTML = history.map(h=>`<div class="history-item" onclick="loadHistory('${h.split(' = ').pop()}')">${h}</div>`).join('');
+}
+
+function loadHistory(val) { expr=val; updateDisplay(); }
+function clearHistory() { history=[]; renderHistory(); }
+
+// Keyboard support
+document.addEventListener('keydown', e => {
+  if ('0123456789.+-*/()'.includes(e.key)) input(e.key);
+  else if (e.key==='Enter' || e.key==='=') calculate();
+  else if (e.key==='Backspace') backspace();
+  else if (e.key==='Escape') clearAll();
+  else if (e.key==='^') input('^');
+});
+</script>
+</body>
+</html>

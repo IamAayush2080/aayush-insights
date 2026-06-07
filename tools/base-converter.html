@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Number Base Converter — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:640px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🔢</div>
+    <h1 class="tool-page-title">Number Base Converter</h1>
+    <p class="tool-page-desc">Convert numbers between Binary, Decimal, Octal and Hexadecimal instantly.</p>
+  </div>
+  <div class="tool-page-body">
+    <div style="display:flex;flex-direction:column;gap:14px;">
+
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono">Binary (Base 2)</span>
+          <button class="toolbar-btn" onclick="navigator.clipboard.writeText(document.getElementById('bin').value)">Copy</button>
+        </div>
+        <input type="text" id="bin" class="tool-textarea" style="min-height:auto;padding:14px 20px;font-family:var(--font-mono);font-size:1rem;" placeholder="e.g. 1010" oninput="convert('bin',this.value)" />
+      </div>
+
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono">Decimal (Base 10)</span>
+          <button class="toolbar-btn" onclick="navigator.clipboard.writeText(document.getElementById('dec').value)">Copy</button>
+        </div>
+        <input type="text" id="dec" class="tool-textarea" style="min-height:auto;padding:14px 20px;font-family:var(--font-mono);font-size:1rem;" placeholder="e.g. 7539" oninput="convert('dec',this.value)" />
+      </div>
+
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono">Octal (Base 8)</span>
+          <button class="toolbar-btn" onclick="navigator.clipboard.writeText(document.getElementById('oct').value)">Copy</button>
+        </div>
+        <input type="text" id="oct" class="tool-textarea" style="min-height:auto;padding:14px 20px;font-family:var(--font-mono);font-size:1rem;" placeholder="e.g. 17" oninput="convert('oct',this.value)" />
+      </div>
+
+      <div class="tool-input-wrap">
+        <div class="tool-input-toolbar">
+          <span class="toolbar-label mono">Hexadecimal (Base 16)</span>
+          <button class="toolbar-btn" onclick="navigator.clipboard.writeText(document.getElementById('hex').value)">Copy</button>
+        </div>
+        <input type="text" id="hex" class="tool-textarea" style="min-height:auto;padding:14px 20px;font-family:var(--font-mono);font-size:1rem;" placeholder="e.g. 1D73" oninput="convert('hex',this.value)" />
+      </div>
+
+    </div>
+
+    <div id="error" style="margin-top:12px;font-size:0.85rem;color:#f87171;font-family:var(--font-mono);display:none;"></div>
+
+    <!-- Quick reference -->
+    <div class="tool-section-card" style="margin-top:20px;">
+      <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">QUICK REFERENCE</span></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;font-family:var(--font-mono);font-size:0.78rem;">
+        <div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);">Dec</div>
+        <div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);">Bin</div>
+        <div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);">Oct</div>
+        <div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);">Hex</div>
+        ${[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(n=>`
+        <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n}</div>
+        <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n.toString(2)}</div>
+        <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n.toString(8)}</div>
+        <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n.toString(16).toUpperCase()}</div>`).join('')}
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script>
+// Fill quick reference table
+const ref = document.querySelector('.tool-section-card div[style*="grid-template-columns"]');
+const rows = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map(n => `
+  <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n}</div>
+  <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n.toString(2)}</div>
+  <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n.toString(8)}</div>
+  <div style="padding:6px 8px;border-top:1px solid var(--border);color:var(--text2);">${n.toString(16).toUpperCase()}</div>`).join('');
+ref.innerHTML = `<div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);font-family:var(--font-mono);font-size:0.78rem;">Dec</div><div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);font-family:var(--font-mono);font-size:0.78rem;">Bin</div><div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);font-family:var(--font-mono);font-size:0.78rem;">Oct</div><div style="padding:8px;background:var(--bg3);font-weight:500;color:var(--gold);font-family:var(--font-mono);font-size:0.78rem;">Hex</div>${rows}`;
+
+function convert(from, val) {
+  const err = document.getElementById('error');
+  if (!val.trim()) { ['bin','dec','oct','hex'].forEach(id=>{ if(id!==from) document.getElementById(id).value=''; }); err.style.display='none'; return; }
+  try {
+    let decimal;
+    if (from==='bin') decimal = parseInt(val, 2);
+    else if (from==='dec') decimal = parseInt(val, 10);
+    else if (from==='oct') decimal = parseInt(val, 8);
+    else decimal = parseInt(val, 16);
+    if (isNaN(decimal)) throw new Error('Invalid input');
+    if (from!=='bin') document.getElementById('bin').value = decimal.toString(2);
+    if (from!=='dec') document.getElementById('dec').value = decimal.toString(10);
+    if (from!=='oct') document.getElementById('oct').value = decimal.toString(8);
+    if (from!=='hex') document.getElementById('hex').value = decimal.toString(16).toUpperCase();
+    err.style.display = 'none';
+  } catch(e) { err.textContent = '✗ Invalid ' + from.toUpperCase() + ' value'; err.style.display='block'; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BMI Calculator — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:600px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">⚖️</div>
+    <h1 class="tool-page-title">BMI Calculator</h1>
+    <p class="tool-page-desc">Calculate your Body Mass Index and understand what it means.</p>
+  </div>
+  <div class="tool-page-body">
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="filter-btn active" id="btn-metric" onclick="setUnit('metric')">Metric (kg/cm)</button>
+      <button class="filter-btn" id="btn-imperial" onclick="setUnit('imperial')">Imperial (lb/in)</button>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <div>
+          <label style="font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;display:block;margin-bottom:6px;">WEIGHT <span id="weight-unit">(kg)</span></label>
+          <input type="number" id="weight" class="tool-input" style="width:100%;" placeholder="70" min="1" />
+        </div>
+        <div>
+          <label style="font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;display:block;margin-bottom:6px;">HEIGHT <span id="height-unit">(cm)</span></label>
+          <input type="number" id="height" class="tool-input" style="width:100%;" placeholder="170" min="1" />
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-calc" style="padding:10px 28px;width:100%;">Calculate BMI →</button>
+    </div>
+
+    <div id="result" style="display:none;">
+      <div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px;margin-bottom:16px;">
+        <div id="bmi-num" style="font-family:var(--font-disp);font-size:4rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:8px;"></div>
+        <div id="bmi-label" style="font-size:1.1rem;font-weight:500;margin-bottom:16px;"></div>
+        <div class="strength-bar"><div class="strength-fill" id="bmi-bar" style="width:0%;"></div></div>
+      </div>
+
+      <!-- BMI scale -->
+      <div class="tool-section-card">
+        <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">BMI SCALE</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;" id="bmi-scale"></div>
+      </div>
+
+      <div style="margin-top:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;">
+        <p style="font-size:0.78rem;color:var(--text3);">⚠ BMI is a general indicator only. It does not account for muscle mass, age, or body composition. Consult a healthcare professional for personalised advice.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script>
+let unit = 'metric';
+function setUnit(u) {
+  unit = u;
+  document.getElementById('btn-metric').classList.toggle('active', u==='metric');
+  document.getElementById('btn-imperial').classList.toggle('active', u==='imperial');
+  document.getElementById('weight-unit').textContent = u==='metric'?'(kg)':'(lbs)';
+  document.getElementById('height-unit').textContent = u==='metric'?'(cm)':'(inches)';
+  document.getElementById('result').style.display='none';
+}
+
+const ranges = [
+  {label:'Underweight', max:18.5, color:'#60a5fa'},
+  {label:'Normal weight', max:25, color:'#4ade80'},
+  {label:'Overweight', max:30, color:'#fbbf24'},
+  {label:'Obese Class I', max:35, color:'#f97316'},
+  {label:'Obese Class II', max:40, color:'#ef4444'},
+  {label:'Obese Class III', max:999, color:'#dc2626'},
+];
+
+document.getElementById('btn-calc').addEventListener('click', () => {
+  let w = parseFloat(document.getElementById('weight').value);
+  let h = parseFloat(document.getElementById('height').value);
+  if (!w || !h) return;
+  if (unit === 'imperial') { w = w * 0.453592; h = h * 2.54; }
+  const bmi = w / Math.pow(h/100, 2);
+
+  const range = ranges.find(r => bmi < r.max);
+  const pct = Math.min(100, Math.max(5, ((bmi - 10) / 30) * 100));
+
+  document.getElementById('bmi-num').textContent = bmi.toFixed(1);
+  document.getElementById('bmi-label').textContent = range.label;
+  document.getElementById('bmi-label').style.color = range.color;
+  document.getElementById('bmi-bar').style.width = pct + '%';
+  document.getElementById('bmi-bar').style.background = range.color;
+
+  document.getElementById('bmi-scale').innerHTML = ranges.map(r => {
+    const active = r.label === range.label;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:${active?'var(--bg3)':'transparent'};border-radius:var(--r-sm);border:1px solid ${active?'var(--border2)':'transparent'}">
+      <div style="width:12px;height:12px;border-radius:50%;background:${r.color};flex-shrink:0;"></div>
+      <span style="font-size:0.85rem;color:${active?'var(--text)':'var(--text2)'};">${r.label}</span>
+      <span style="margin-left:auto;font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);">${r.max===999?'≥ 40':'< '+r.max}</span>
+      ${active?'<span style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);">← You</span>':''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('result').style.display = 'block';
+});
+</script>
+</body>
+</html>

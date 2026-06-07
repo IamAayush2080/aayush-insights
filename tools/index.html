@@ -131,3 +131,44 @@
 <script src="tools.js"></script>
 </body>
 </html>
+<script>
+// Inject new tools after page load
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('tools-grid');
+  const newCards = `
+    <div class="tool-section-label" data-cat="utility">🧮 Calculators & Converters</div>
+    <div class="tool-card" data-cat="utility" data-name="scientific calculator math sin cos log">
+      <div class="tool-card-icon">🧮</div>
+      <div class="tool-card-body"><div class="tool-card-name">Scientific Calculator</div><div class="tool-card-desc">Full scientific calc with sin, cos, log, history</div></div>
+      <a href="calculator.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="utility" data-name="bmi calculator body mass index weight height">
+      <div class="tool-card-icon">⚖️</div>
+      <div class="tool-card-body"><div class="tool-card-name">BMI Calculator</div><div class="tool-card-desc">Calculate Body Mass Index with scale</div></div>
+      <a href="bmi-calculator.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="utility" data-name="loan comparison compare best deal interest">
+      <div class="tool-card-icon">📊</div>
+      <div class="tool-card-body"><div class="tool-card-name">Loan Comparison</div><div class="tool-card-desc">Compare 3 loans side by side instantly</div></div>
+      <a href="loan-comparison.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="dev" data-name="number base converter binary decimal hex octal">
+      <div class="tool-card-icon">🔢</div>
+      <div class="tool-card-body"><div class="tool-card-name">Base Converter</div><div class="tool-card-desc">Binary, Decimal, Octal, Hexadecimal</div></div>
+      <a href="base-converter.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-section-label" data-cat="productivity">✍️ Writing & Practice</div>
+    <div class="tool-card" data-cat="productivity" data-name="typing speed test wpm accuracy keyboard">
+      <div class="tool-card-icon">⌨️</div>
+      <div class="tool-card-body"><div class="tool-card-name">Typing Speed Test</div><div class="tool-card-desc">Test your WPM and accuracy</div></div>
+      <a href="typing-test.html" class="tool-card-btn">Open →</a>
+    </div>
+    <div class="tool-card" data-cat="text" data-name="grammar checker spelling mistakes writing">
+      <div class="tool-card-icon">✍️</div>
+      <div class="tool-card-body"><div class="tool-card-name">Grammar Checker</div><div class="tool-card-desc">Check for grammar and style issues</div></div>
+      <a href="grammar-checker.html" class="tool-card-btn">Open →</a>
+    </div>
+  `;
+  grid.insertAdjacentHTML('beforeend', newCards);
+});
+</script>

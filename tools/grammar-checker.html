@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grammar Checker — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .issue-card {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--r-md); padding:14px 16px;
+      margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;
+    }
+    .issue-type {
+      font-size:0.68rem; font-family:var(--font-mono); letter-spacing:0.1em;
+      text-transform:uppercase; padding:3px 8px; border-radius:99px;
+      flex-shrink:0; margin-top:2px;
+    }
+    .type-grammar { background:rgba(248,113,113,0.15); color:#f87171; }
+    .type-style   { background:rgba(251,191,36,0.15);  color:#fbbf24; }
+    .type-clarity { background:rgba(96,165,250,0.15);  color:#60a5fa; }
+    .issue-original { font-family:var(--font-mono); font-size:0.82rem; color:var(--text); text-decoration:line-through; margin-bottom:3px; }
+    .issue-suggest  { font-family:var(--font-mono); font-size:0.82rem; color:#4ade80; margin-bottom:4px; }
+    .issue-reason   { font-size:0.78rem; color:var(--text3); }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">✍️</div>
+    <h1 class="tool-page-title">Grammar Checker</h1>
+    <p class="tool-page-desc">Check your text for common grammar mistakes, style issues and clarity improvements.</p>
+  </div>
+  <div class="tool-page-body">
+    <div class="tool-input-wrap">
+      <div class="tool-input-toolbar">
+        <span class="toolbar-label mono">Your Text</span>
+        <button class="toolbar-btn" id="btn-paste">Paste</button>
+        <button class="toolbar-btn" id="btn-clear">Clear</button>
+        <span id="word-count" style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);margin-left:auto;">0 words</span>
+      </div>
+      <textarea id="main-input" class="tool-textarea" style="min-height:200px;" placeholder="Paste or type your text here to check for grammar issues..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-check" style="padding:10px 28px;">Check Grammar →</button>
+    </div>
+
+    <div id="result" style="display:none;margin-top:20px;">
+      <div id="summary-badges" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;"></div>
+      <div id="issues-list"></div>
+      <div style="margin-top:16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;">
+        <p style="font-size:0.78rem;color:var(--text3);">⚠ This is a basic rule-based checker. For professional-grade grammar checking, consider using Grammarly or LanguageTool.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script>
+document.getElementById('main-input').addEventListener('input', function() {
+  const w = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+  document.getElementById('word-count').textContent = w + ' words';
+});
+
+document.getElementById('btn-paste').addEventListener('click', async () => { document.getElementById('main-input').value = await navigator.clipboard.readText(); document.getElementById('main-input').dispatchEvent(new Event('input')); });
+document.getElementById('btn-clear').addEventListener('click', () => { document.getElementById('main-input').value=''; document.getElementById('result').style.display='none'; document.getElementById('word-count').textContent='0 words'; });
+
+// Grammar rules
+const RULES = [
+  // Double spaces
+  { pattern: /  +/g, type:'grammar', reason:'Double space found', suggest: v => v.replace(/  +/g,' '), label:'Double space' },
+  // Comma before because
+  { pattern: /,\s*because\b/gi, type:'style', reason:'"Because" rarely needs a comma before it', suggest: v => v.replace(/,\s*because\b/gi,' because'), label:'Comma before "because"' },
+  // Repeated words
+  { pattern: /\b(\w+)\s+\1\b/gi, type:'grammar', reason:'Repeated word', suggest: v => v.replace(/\b(\w+)\s+\1\b/gi,'$1'), label:'Repeated word' },
+  // i should be I
+  { pattern: /\bi\b(?!')/g, type:'grammar', reason:'Lowercase "i" should be capitalised', suggest: v => v.replace(/\bi\b(?!')/g,'I'), label:'Lowercase "i"' },
+  // Incorrect: should of / would of / could of
+  { pattern: /\b(should|would|could|must)\s+of\b/gi, type:'grammar', reason: '"of" should be "have" here', suggest: v => v.replace(/\b(should|would|could|must)\s+of\b/gi,'$1 have'), label:'Should/would/could of' },
+  // Irregardless
+  { pattern: /\birregardless\b/gi, type:'grammar', reason:'"Irregardless" is not standard — use "regardless"', suggest: v => v.replace(/\birregardless\b/gi,'regardless'), label:'Irregardless' },
+  // Their vs there vs they're (basic)
+  { pattern: /\bthere\s+going\b/gi, type:'grammar', reason:'Should be "they\'re going"', suggest: v => v.replace(/\bthere\s+going\b/gi,"they're going"), label:'There/they\'re confusion' },
+  // Passive: was + past participle (flag only, don't auto-fix)
+  { pattern: /\bwas\s+\w+ed\b/gi, type:'style', reason:'Passive voice detected — consider active voice for clarity', suggest: v => v, label:'Passive voice' },
+  // Very + adjective (weak writing)
+  { pattern: /\bvery\s+(good|bad|big|small|fast|slow|hard|easy|nice|great)\b/gi, type:'style', reason:'"Very + adjective" is weak — use a stronger word', suggest: v => v, label:'Weak "very" phrase' },
+  // Multiple exclamation marks
+  { pattern: /!{2,}/g, type:'style', reason:'Multiple exclamation marks look unprofessional', suggest: v => v.replace(/!{2,}/g,'!'), label:'Multiple exclamation marks' },
+  // Sentence not capitalised after period
+  { pattern: /\.\s+[a-z]/g, type:'grammar', reason:'Sentence should start with a capital letter', suggest: v => v.replace(/\.\s+([a-z])/g, (m,c) => '. '+c.toUpperCase()), label:'Missing capital after period' },
+  // No space after comma
+  { pattern: /,[^\s\d]/g, type:'grammar', reason:'Missing space after comma', suggest: v => v.replace(/,([^\s\d])/g,', $1'), label:'No space after comma' },
+];
+
+document.getElementById('btn-check').addEventListener('click', () => {
+  const text = document.getElementById('main-input').value;
+  if (!text.trim()) return;
+
+  const found = [];
+  RULES.forEach(rule => {
+    const matches = text.match(rule.pattern);
+    if (matches) {
+      const unique = [...new Set(matches)];
+      unique.forEach(match => {
+        found.push({ ...rule, match, fixed: rule.suggest(match) });
+      });
+    }
+  });
+
+  const grammar = found.filter(f=>f.type==='grammar').length;
+  const style   = found.filter(f=>f.type==='style').length;
+
+  document.getElementById('summary-badges').innerHTML = found.length===0
+    ? '<span class="result-badge success">✓ No issues found — text looks good!</span>'
+    : `${grammar?`<span class="result-badge warn">✗ ${grammar} grammar issue${grammar!==1?'s':''}</span>`:''}
+       ${style?`<span class="result-badge info">⚠ ${style} style suggestion${style!==1?'s':''}</span>`:''}`;
+
+  document.getElementById('issues-list').innerHTML = found.length===0 ? '' : found.map(f=>`
+    <div class="issue-card">
+      <span class="issue-type type-${f.type}">${f.type}</span>
+      <div>
+        <div class="issue-original">"${f.match}"</div>
+        ${f.fixed!==f.match?`<div class="issue-suggest">→ "${f.fixed}"</div>`:''}
+        <div class="issue-reason">${f.reason}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('result').style.display = 'block';
+});
+</script>
+</body>
+</html>

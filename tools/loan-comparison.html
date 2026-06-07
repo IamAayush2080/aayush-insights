@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loan Comparison — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="tool-page" style="max-width:900px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">📊</div>
+    <h1 class="tool-page-title">Loan Comparison</h1>
+    <p class="tool-page-desc">Compare up to 3 loans side by side — find the best deal instantly.</p>
+  </div>
+  <div class="tool-page-body">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:24px;" id="loan-inputs">
+
+      <!-- Loan 1 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;">
+        <div style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:14px;">LOAN 1</div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">AMOUNT (₹)</label>
+          <input type="number" class="tool-input loan-amount" style="width:100%;" placeholder="500000" value="500000" />
+        </div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">INTEREST RATE (%)</label>
+          <input type="number" class="tool-input loan-rate" style="width:100%;" placeholder="10" value="10" step="0.1" />
+        </div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">TENURE (MONTHS)</label>
+          <input type="number" class="tool-input loan-tenure" style="width:100%;" placeholder="36" value="36" />
+        </div>
+      </div>
+
+      <!-- Loan 2 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;">
+        <div style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:14px;">LOAN 2</div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">AMOUNT (₹)</label>
+          <input type="number" class="tool-input loan-amount" style="width:100%;" placeholder="500000" value="500000" />
+        </div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">INTEREST RATE (%)</label>
+          <input type="number" class="tool-input loan-rate" style="width:100%;" placeholder="12" value="12" step="0.1" />
+        </div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">TENURE (MONTHS)</label>
+          <input type="number" class="tool-input loan-tenure" style="width:100%;" placeholder="24" value="24" />
+        </div>
+      </div>
+
+      <!-- Loan 3 -->
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;">
+        <div style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:14px;">LOAN 3</div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">AMOUNT (₹)</label>
+          <input type="number" class="tool-input loan-amount" style="width:100%;" placeholder="500000" value="500000" />
+        </div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">INTEREST RATE (%)</label>
+          <input type="number" class="tool-input loan-rate" style="width:100%;" placeholder="8.5" value="8.5" step="0.1" />
+        </div>
+        <div class="form-group" style="display:flex;flex-direction:column;gap:6px;">
+          <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">TENURE (MONTHS)</label>
+          <input type="number" class="tool-input loan-tenure" style="width:100%;" placeholder="48" value="48" />
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="btn-compare" style="padding:10px 28px;">Compare Loans →</button>
+    </div>
+
+    <div id="result" style="display:none;margin-top:24px;">
+      <div id="best-badge" style="margin-bottom:16px;"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;" id="result-cards"></div>
+
+      <!-- Comparison table -->
+      <div class="tool-section-card" style="margin-top:20px;overflow-x:auto;">
+        <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">SIDE BY SIDE</span></div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:8px 12px;color:var(--text3);font-family:var(--font-mono);font-size:0.72px;letter-spacing:0.1em;font-weight:400;font-size:0.72rem;">METRIC</th>
+              <th style="text-align:right;padding:8px 12px;color:var(--gold);font-family:var(--font-mono);font-size:0.72rem;">Loan 1</th>
+              <th style="text-align:right;padding:8px 12px;color:var(--gold);font-family:var(--font-mono);font-size:0.72rem;">Loan 2</th>
+              <th style="text-align:right;padding:8px 12px;color:var(--gold);font-family:var(--font-mono);font-size:0.72rem;">Loan 3</th>
+            </tr>
+          </thead>
+          <tbody id="compare-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script>
+document.getElementById('btn-compare').addEventListener('click', () => {
+  const amounts  = [...document.querySelectorAll('.loan-amount')].map(i=>parseFloat(i.value)||0);
+  const rates    = [...document.querySelectorAll('.loan-rate')].map(i=>parseFloat(i.value)||0);
+  const tenures  = [...document.querySelectorAll('.loan-tenure')].map(i=>parseInt(i.value)||0);
+
+  const results = amounts.map((P, i) => {
+    const r = rates[i]/100/12, n = tenures[i];
+    const emi = r ? (P*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1) : P/n;
+    const total = emi*n;
+    const interest = total - P;
+    return {P, rate:rates[i], n, emi, total, interest};
+  });
+
+  const fmt = v => '₹'+Math.round(v).toLocaleString('en-IN');
+  const bestIdx = results.reduce((bi,r,i,a)=>r.total<a[bi].total?i:bi,0);
+
+  document.getElementById('best-badge').innerHTML =
+    `<span class="result-badge success">✓ Loan ${bestIdx+1} is the best deal — saves ₹${Math.round(results.reduce((mx,r,i)=>i!==bestIdx?Math.max(mx,r.total-results[bestIdx].total):mx,0)).toLocaleString('en-IN')} in total interest</span>`;
+
+  const colors = ['#c9a84c','#7539c9','#4ade80'];
+  document.getElementById('result-cards').innerHTML = results.map((r,i)=>`
+    <div style="background:var(--bg2);border:2px solid ${i===bestIdx?colors[i]:'var(--border)'};border-radius:var(--r-lg);padding:20px;position:relative;">
+      ${i===bestIdx?'<div style="position:absolute;top:-10px;left:20px;background:var(--gold);color:var(--bg);font-size:0.68rem;font-family:var(--font-mono);letter-spacing:0.1em;padding:3px 10px;border-radius:99px;">BEST DEAL</div>':''}
+      <div style="font-size:0.72rem;color:${colors[i]};font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:14px;">LOAN ${i+1}</div>
+      <div style="font-family:var(--font-disp);font-size:1.8rem;font-weight:700;color:${colors[i]};margin-bottom:4px;">${fmt(r.emi)}</div>
+      <div style="font-size:0.78rem;color:var(--text3);margin-bottom:14px;">per month</div>
+      <div style="font-size:0.85rem;color:var(--text2);">Total: <strong style="color:var(--text);">${fmt(r.total)}</strong></div>
+      <div style="font-size:0.85rem;color:var(--text2);">Interest: <strong style="color:var(--text);">${fmt(r.interest)}</strong></div>
+    </div>`).join('');
+
+  const rows = [
+    ['Monthly EMI', ...results.map(r=>fmt(r.emi))],
+    ['Total Payment', ...results.map(r=>fmt(r.total))],
+    ['Total Interest', ...results.map(r=>fmt(r.interest))],
+    ['Interest %', ...results.map(r=>(r.interest/r.total*100).toFixed(1)+'%')],
+    ['Rate', ...results.map(r=>r.rate+'%')],
+    ['Tenure', ...results.map(r=>r.n+' months')],
+  ];
+
+  document.getElementById('compare-table').innerHTML = rows.map(row=>`
+    <tr style="border-bottom:1px solid var(--border);">
+      <td style="padding:8px 12px;color:var(--text3);font-size:0.82rem;">${row[0]}</td>
+      ${row.slice(1).map((v,i)=>`<td style="padding:8px 12px;text-align:right;color:${i===bestIdx?'var(--gold)':'var(--text2)'};font-family:var(--font-mono);font-size:0.82rem;font-weight:${i===bestIdx?'600':'400'};">${v}</td>`).join('')}
+    </tr>`).join('');
+
+  document.getElementById('result').style.display = 'block';
+});
+</script>
+</body>
+</html>
