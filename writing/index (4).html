@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writings & Research — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <style>
+    .blog-hero{padding:120px 5% 60px;max-width:1100px;margin:0 auto;}
+    .articles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;padding:0 5% 80px;max-width:1100px;margin:0 auto;}
+    .article-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:var(--transition);display:flex;flex-direction:column;}
+    .article-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.3);}
+    .article-card-top{padding:24px 24px 0;}
+    .article-cat{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;text-transform:uppercase;background:var(--gold-dim);padding:3px 10px;border-radius:99px;margin-bottom:14px;}
+    .article-title{font-family:var(--font-disp);font-size:1.25rem;font-weight:700;line-height:1.2;margin-bottom:10px;color:var(--text);}
+    .article-excerpt{font-size:0.85rem;color:var(--text2);line-height:1.7;margin-bottom:16px;}
+    .article-meta{display:flex;align-items:center;gap:12px;padding:14px 24px;border-top:1px solid var(--border);margin-top:auto;}
+    .tools-filter{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;}
+    .filter-btn{font-family:var(--font-body);font-size:0.82rem;color:var(--text2);background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:99px;cursor:pointer;transition:var(--transition);}
+    .filter-btn.active{background:var(--gold-dim);color:var(--gold-lt);border-color:var(--gold-dim);}
+    .blog-search-wrap{display:flex;align-items:center;gap:12px;max-width:480px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r-md);padding:10px 16px;transition:var(--transition);}
+    .blog-search-wrap:focus-within{border-color:var(--gold-dim);}
+    .blog-search-input{flex:1;background:none;border:none;outline:none;font-family:var(--font-body);font-size:0.95rem;color:var(--text);}
+    .blog-search-input::placeholder{color:var(--text3);}
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../tools/index.html">Tools</a></li>
+    <li><a href="#" class="active">Writings</a></li>
+    <li><a href="../thoughts/index.html">Thoughts</a></li>
+  </ul>
+  <a href="../index.html" class="nav-cta">← Home</a>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav">
+  <a href="../index.html#about">About</a>
+  <a href="../tools/index.html">Tools</a>
+  <a href="#">Writings</a>
+  <a href="../thoughts/index.html">Thoughts</a>
+</div>
+
+<div class="blog-hero">
+  <p class="section-eyebrow mono">✦ Deep research · Honest opinions · #7539</p>
+  <h1 style="font-size:clamp(2.5rem,5vw,4.5rem);font-weight:900;line-height:1.05;margin:12px 0 16px;">Writings &amp; <em style="color:var(--gold);font-style:italic;">Ideas</em></h1>
+  <p style="font-size:1rem;color:var(--text2);max-width:520px;margin-bottom:28px;">Topics I've gone deep on. Every aspect covered. My honest opinion always included.</p>
+  <div class="blog-search-wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="16" height="16" style="color:var(--text3);flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+    <input type="text" id="blog-search" class="blog-search-input" placeholder="Search articles..." />
+  </div>
+  <div class="tools-filter">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="research">🔬 Research</button>
+    <button class="filter-btn" data-cat="opinion">🧠 Opinion</button>
+    <button class="filter-btn" data-cat="crazy">🌀 Crazy Thoughts</button>
+    <button class="filter-btn" data-cat="experience">🏆 Experience</button>
+  </div>
+</div>
+
+<div class="articles-grid" id="articles-grid"></div>
+
+<div style="padding:0 5% 80px;max-width:1100px;margin:0 auto;">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:200px;">
+      <p style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:8px;">✦ MORE COMING SOON</p>
+      <h3 style="font-family:var(--font-disp);font-size:1.4rem;margin-bottom:8px;">More articles on the way</h3>
+      <p style="font-size:0.88rem;color:var(--text2);">I write when I have something real to say. Check back soon — or read my raw thoughts.</p>
+    </div>
+    <a href="../thoughts/index.html" class="btn-primary" style="white-space:nowrap;">Read Thoughts →</a>
+  </div>
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:40px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+  <a href="../index.html" style="font-family:var(--font-disp);font-size:1rem;font-weight:700;color:var(--text2);">Aayush Insights</a>
+  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2024 · Written with purpose</span>
+  <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);opacity:0.5;">#7539</span>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script>
+const ARTICLES=[
+  {title:"The Universe Started From Nothing — And That Should Terrify You",excerpt:"We exist inside a 13.8 billion year old explosion. Everything came from a singularity smaller than an atom. I've been thinking about this and need to write it down.",cat:"crazy",catLabel:"🌀 Crazy Thoughts",date:"2024",readTime:"9 min",status:"live",slug:"universe-singularity.html"},
+  {title:"Why Cybersecurity Is the Most Important Skill of This Decade",excerpt:"Every system, every device, every person is a potential target. The more I explore cybersecurity, the more I realise how exposed most people really are.",cat:"research",catLabel:"🔬 Deep Research",date:"Coming soon",readTime:"12 min",status:"coming"},
+  {title:"My Opinion: Social Media Is Designed to Make You Feel Small",excerpt:"The algorithms are not neutral. They are built to maximise engagement — and the fastest way to do that is to make you compare yourself to others.",cat:"opinion",catLabel:"🧠 My Opinion",date:"Coming soon",readTime:"6 min",status:"coming"},
+  {title:"What Guitar Taught Me About Patience and Systems",excerpt:"I picked up a guitar and it taught me more about how to learn anything than any book on learning ever did.",cat:"experience",catLabel:"🏆 Experience",date:"Coming soon",readTime:"5 min",status:"coming"},
+  {title:"Is Free Will Real? I Genuinely Don't Know Anymore",excerpt:"Every decision you make is the result of prior causes — neurons firing based on chemistry. So are you actually choosing anything?",cat:"crazy",catLabel:"🌀 Crazy Thoughts",date:"Coming soon",readTime:"9 min",status:"coming"},
+  {title:"The Internet Broke Information — Here Is How I Think About It",excerpt:"We have more information than ever and understand less than ever. The economics of attention have fundamentally broken how knowledge spreads.",cat:"opinion",catLabel:"🧠 My Opinion",date:"Coming soon",readTime:"8 min",status:"coming"}
+];
+
+let currentCat='all',currentQuery='';
+
+function render(){
+  const grid=document.getElementById('articles-grid');
+  const filtered=ARTICLES.filter(a=>(currentCat==='all'||a.cat===currentCat)&&(currentQuery===''||a.title.toLowerCase().includes(currentQuery)||a.excerpt.toLowerCase().includes(currentQuery)));
+  if(!filtered.length){grid.innerHTML='<div style="text-align:center;padding:60px 20px;grid-column:1/-1;"><div style="font-size:2.5rem;margin-bottom:16px;">📭</div><p style="color:var(--text2);">No articles found</p></div>';return;}
+  grid.innerHTML=filtered.map(a=>`<div class="article-card">
+    <div class="article-card-top">
+      <div class="article-cat">${a.catLabel}</div>
+      <h2 class="article-title">${a.title}</h2>
+      <p class="article-excerpt">${a.excerpt}</p>
+      ${a.status==='live'?'':'<span style="display:inline-block;font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;padding:4px 10px;border:1px solid var(--border);border-radius:99px;margin-bottom:16px;">COMING SOON</span>'}
+    </div>
+    <div class="article-meta">
+      <span style="font-size:0.75rem;color:var(--text3);font-family:var(--font-mono);">${a.date}</span>
+      <span style="font-size:0.75rem;color:var(--text3);">· ${a.readTime} read</span>
+    </div>
+  </div>`).join('');
+  grid.querySelectorAll('.article-card').forEach((card,i) => {
+    const a = filtered[i];
+    if (a.status==='live' && a.slug) { card.style.cursor='pointer'; card.addEventListener('click',()=>window.location=a.slug); }
+  });
+  grid.querySelectorAll('.article-card').forEach((c,i)=>{c.style.opacity='0';c.style.transform='translateY(16px)';c.style.transition=`opacity 0.4s ease ${i*0.07}s,transform 0.4s ease ${i*0.07}s,border-color 0.3s,box-shadow 0.3s`;setTimeout(()=>{c.style.opacity='1';c.style.transform='translateY(0)';},50);});
+}
+
+document.getElementById('blog-search').addEventListener('input',e=>{currentQuery=e.target.value.toLowerCase().trim();render();});
+document.querySelectorAll('.filter-btn').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentCat=btn.dataset.cat;render();}));
+render();
+</script>
+<script src="../assets/js/nav.js"></script>
+</body>
+</html>

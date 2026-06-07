@@ -4,6 +4,7 @@
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Merge PDF — Aayush Insights</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
   <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
 </head>
 <body>
@@ -11,6 +12,7 @@
   <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
   <ul class="nav-links"><li><a href="index.html" class="active">Tools</a></li></ul>
   <a href="index.html" class="nav-cta">← All Tools</a>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
   <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="tool-page">
@@ -42,6 +44,7 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
 <script>
 let files=[];
 const dropZone=document.getElementById('drop-zone'),fileInput=document.getElementById('file-input');
@@ -96,5 +99,6 @@ document.getElementById('btn-merge').addEventListener('click',async()=>{
 
 document.getElementById('btn-reset').addEventListener('click',()=>{files=[];renderList();document.getElementById('status').innerHTML='';fileInput.value='';});
 </script>
+<script src="../assets/js/nav.js"></script>
 </body>
 </html>
