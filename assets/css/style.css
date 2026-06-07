@@ -608,3 +608,52 @@ footer {
   .hero-stats { gap: 20px; }
   footer { flex-direction: column; align-items: flex-start; }
 }
+
+/* ── Category chips ────────────────────────────────────────── */
+.cat-chip {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 12px;
+  transition: var(--transition);
+}
+.cat-chip:hover { border-color: var(--border2); }
+.cat-chip span { font-size: 1.3rem; }
+.cat-name { font-size: 0.85rem; font-weight: 500; color: var(--text); }
+.cat-count { font-size: 0.75rem; color: var(--text3); margin-top: 2px; }
+
+/* ── Interest tags ─────────────────────────────────────────── */
+.interest-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text2);
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  padding: 6px 14px;
+  border-radius: 99px;
+  transition: var(--transition);
+}
+.interest-tag:hover { color: var(--gold); border-color: var(--gold-dim); }
+
+/* ── Footer link ───────────────────────────────────────────── */
+.footer-link {
+  font-size: 0.88rem;
+  color: var(--text2);
+  text-decoration: none;
+  transition: var(--transition);
+  display: block;
+}
+.footer-link:hover { color: var(--gold); }
+
+/* ── Footer grid responsive ────────────────────────────────── */
+@media (max-width: 700px) {
+  footer > div > div:first-child {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (max-width: 420px) {
+  footer > div > div:first-child {
+    grid-template-columns: 1fr !important;
+  }
+}

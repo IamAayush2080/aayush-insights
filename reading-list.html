@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading List — Aayush Insights</title>
+  <meta name="description" content="Books, articles and resources Aayush Kurmi recommends." />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>" />
+  <style>
+    .reading-page { max-width:900px; margin:0 auto; padding:120px 5% 80px; }
+    .reading-section { margin-bottom:56px; }
+    .reading-section-title {
+      font-family:var(--font-disp); font-size:1.6rem; font-weight:700;
+      margin-bottom:20px; display:flex; align-items:center; gap:12px;
+    }
+    .book-card {
+      display:flex; gap:20px; align-items:flex-start;
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--r-lg); padding:20px 24px;
+      margin-bottom:12px; transition:var(--transition);
+    }
+    .book-card:hover { border-color:var(--border2); transform:translateX(4px); }
+    .book-spine {
+      width:48px; height:64px; border-radius:4px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.6rem; flex-shrink:0;
+    }
+    .book-title { font-size:0.95rem; font-weight:600; color:var(--text); margin-bottom:3px; }
+    .book-author { font-size:0.8rem; color:var(--text3); font-family:var(--font-mono); margin-bottom:8px; }
+    .book-note { font-size:0.85rem; color:var(--text2); line-height:1.6; }
+    .book-tag {
+      display:inline-block; font-size:0.68rem; font-family:var(--font-mono);
+      letter-spacing:0.1em; color:var(--gold); background:var(--gold-dim);
+      padding:2px 8px; border-radius:99px; margin-top:8px;
+    }
+    .resource-card {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--r-md); padding:16px 20px;
+      margin-bottom:10px; transition:var(--transition);
+      display:flex; align-items:center; gap:14px;
+      text-decoration:none;
+    }
+    .resource-card:hover { border-color:var(--border2); transform:translateX(4px); }
+    .resource-icon { font-size:1.3rem; flex-shrink:0; }
+    .resource-name { font-size:0.9rem; font-weight:500; color:var(--text); margin-bottom:2px; }
+    .resource-desc { font-size:0.78rem; color:var(--text3); }
+    .resource-arrow { margin-left:auto; color:var(--text3); font-size:0.8rem; flex-shrink:0; }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="tools/index.html">Tools</a></li>
+    <li><a href="blog/index.html">Writings</a></li>
+    <li><a href="thoughts/index.html">Thoughts</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← Home</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav">
+  <a href="index.html#about">About</a>
+  <a href="tools/index.html">Tools</a>
+  <a href="blog/index.html">Writings</a>
+  <a href="thoughts/index.html">Thoughts</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<div class="reading-page">
+  <p class="section-eyebrow mono">✦ What I read · #7539</p>
+  <h1 style="font-family:var(--font-disp);font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1.05;margin:12px 0 16px;">
+    Reading <em style="color:var(--gold);font-style:italic;">List</em>
+  </h1>
+  <p style="font-size:1rem;color:var(--text2);max-width:520px;line-height:1.75;margin-bottom:56px;">
+    Books, articles and resources that have shaped how I think. Not sponsored — just things I've genuinely found valuable.
+  </p>
+
+  <!-- Books -->
+  <div class="reading-section">
+    <div class="reading-section-title">
+      <span>📚</span> Books
+    </div>
+
+    <div class="book-card">
+      <div class="book-spine" style="background:rgba(201,168,76,0.15);">🌌</div>
+      <div>
+        <div class="book-title">A Brief History of Time</div>
+        <div class="book-author">Stephen Hawking</div>
+        <div class="book-note">The book that made cosmology accessible. Hawking explains the biggest questions — time, black holes, the origin of the universe — in a way that actually makes sense. Changed how I think about existence.</div>
+        <span class="book-tag">Cosmology</span>
+      </div>
+    </div>
+
+    <div class="book-card">
+      <div class="book-spine" style="background:rgba(117,57,201,0.15);">🧠</div>
+      <div>
+        <div class="book-title">Thinking, Fast and Slow</div>
+        <div class="book-author">Daniel Kahneman</div>
+        <div class="book-note">Two systems in your brain — one fast and emotional, one slow and rational. Understanding this changed how I make decisions and why I'm wrong more often than I think.</div>
+        <span class="book-tag">Psychology</span>
+      </div>
+    </div>
+
+    <div class="book-card">
+      <div class="book-spine" style="background:rgba(74,222,128,0.1);">🔐</div>
+      <div>
+        <div class="book-title">The Art of Invisibility</div>
+        <div class="book-author">Kevin Mitnick</div>
+        <div class="book-note">Kevin Mitnick was the world's most famous hacker. This book is about digital privacy — how exposed you really are and what to do about it. Essential reading for anyone interested in cybersecurity.</div>
+        <span class="book-tag">Cybersecurity</span>
+      </div>
+    </div>
+
+    <div class="book-card">
+      <div class="book-spine" style="background:rgba(248,113,113,0.1);">⚡</div>
+      <div>
+        <div class="book-title">Atomic Habits</div>
+        <div class="book-author">James Clear</div>
+        <div class="book-note">Small steps compound into massive change. The system is more important than the goal. I don't agree with everything but the core framework of habit stacking and identity-based change is genuinely useful.</div>
+        <span class="book-tag">Self Improvement</span>
+      </div>
+    </div>
+
+    <div class="book-card">
+      <div class="book-spine" style="background:rgba(96,165,250,0.1);">🌊</div>
+      <div>
+        <div class="book-title">Sapiens</div>
+        <div class="book-author">Yuval Noah Harari</div>
+        <div class="book-note">How Homo sapiens took over the world through shared myths, language and cooperation. Makes you question everything about civilization, money, religion and why humans are the way we are.</div>
+        <span class="book-tag">History · Philosophy</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Online Resources -->
+  <div class="reading-section">
+    <div class="reading-section-title">
+      <span>🌐</span> Online Resources
+    </div>
+
+    <a href="https://www.khanacademy.org" target="_blank" class="resource-card">
+      <div class="resource-icon">📐</div>
+      <div>
+        <div class="resource-name">Khan Academy</div>
+        <div class="resource-desc">Free world-class education on everything from maths to computer science</div>
+      </div>
+      <div class="resource-arrow">↗</div>
+    </a>
+
+    <a href="https://www.youtube.com/@3blue1brown" target="_blank" class="resource-card">
+      <div class="resource-icon">🔵</div>
+      <div>
+        <div class="resource-name">3Blue1Brown</div>
+        <div class="resource-desc">The best visual explanations of maths and complex concepts on the internet</div>
+      </div>
+      <div class="resource-arrow">↗</div>
+    </a>
+
+    <a href="https://www.youtube.com/@Veritasium" target="_blank" class="resource-card">
+      <div class="resource-icon">⚗️</div>
+      <div>
+        <div class="resource-name">Veritasium</div>
+        <div class="resource-desc">Science, engineering and the counterintuitive — Derek Muller is one of the best science communicators alive</div>
+      </div>
+      <div class="resource-arrow">↗</div>
+    </a>
+
+    <a href="https://www.freecodecamp.org" target="_blank" class="resource-card">
+      <div class="resource-icon">💻</div>
+      <div>
+        <div class="resource-name">freeCodeCamp</div>
+        <div class="resource-desc">Free coding curriculum — HTML, CSS, JavaScript, Python and more. Where I sharpened my web skills</div>
+      </div>
+      <div class="resource-arrow">↗</div>
+    </a>
+
+    <a href="https://www.youtube.com/@NetworkChuck" target="_blank" class="resource-card">
+      <div class="resource-icon">🔐</div>
+      <div>
+        <div class="resource-name">NetworkChuck</div>
+        <div class="resource-desc">Cybersecurity, networking and ethical hacking explained in an actually engaging way</div>
+      </div>
+      <div class="resource-arrow">↗</div>
+    </a>
+
+    <a href="https://news.ycombinator.com" target="_blank" class="resource-card">
+      <div class="resource-icon">🟠</div>
+      <div>
+        <div class="resource-name">Hacker News</div>
+        <div class="resource-desc">Tech, startups, science and interesting discussions — the daily reading habit of most builders</div>
+      </div>
+      <div class="resource-arrow">↗</div>
+    </a>
+
+  </div>
+
+  <!-- Quote -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:24px 28px;margin-top:40px;">
+    <p style="font-family:var(--font-disp);font-size:1.2rem;font-style:italic;color:var(--text2);line-height:1.6;margin-bottom:10px;">"The more that you read, the more things you will know. The more that you learn, the more places you'll go."</p>
+    <p style="font-size:0.8rem;color:var(--text3);font-family:var(--font-mono);">— Dr. Seuss</p>
+  </div>
+
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:40px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:900px;margin:0 auto;">
+  <a href="index.html" style="font-family:var(--font-disp);font-size:1rem;font-weight:700;color:var(--text2);">Aayush Insights</a>
+  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2024 · Aayush Kurmi · #7539</span>
+  <a href="privacy.html" style="font-size:0.78rem;color:var(--text3);">Privacy</a>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/theme.js"></script>
+</body>
+</html>
