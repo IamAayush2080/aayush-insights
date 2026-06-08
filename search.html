@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search — Aayush Insights</title>
+  <meta name="description" content="Search everything on Aayush Insights — tools, articles, thoughts." />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>" />
+  <style>
+    .search-page { max-width:760px; margin:0 auto; padding:120px 5% 80px; }
+
+    .search-bar-big {
+      display:flex; align-items:center; gap:14px;
+      background:var(--bg2); border:1px solid var(--border2);
+      border-radius:var(--r-lg); padding:14px 20px;
+      margin-bottom:12px; transition:var(--transition);
+      box-shadow:0 4px 24px rgba(0,0,0,0.15);
+    }
+    .search-bar-big:focus-within {
+      border-color:var(--gold-dim);
+      box-shadow:0 4px 32px rgba(201,168,76,0.15);
+    }
+    .search-bar-input {
+      flex:1; background:none; border:none; outline:none;
+      font-family:var(--font-body); font-size:1.1rem; color:var(--text);
+    }
+    .search-bar-input::placeholder { color:var(--text3); }
+
+    .search-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
+    .sf-btn {
+      font-size:0.8rem; padding:5px 14px; border-radius:99px;
+      border:1px solid var(--border); background:var(--bg2);
+      color:var(--text2); cursor:pointer; transition:var(--transition);
+      font-family:var(--font-body);
+    }
+    .sf-btn:hover { border-color:var(--border2); color:var(--text); }
+    .sf-btn.active { background:var(--gold-dim); color:var(--gold-lt); border-color:var(--gold-dim); }
+
+    .result-section { margin-bottom:32px; }
+    .result-section-title {
+      font-size:0.72rem; color:var(--text3); font-family:var(--font-mono);
+      letter-spacing:0.15em; text-transform:uppercase;
+      margin-bottom:12px; padding-bottom:8px;
+      border-bottom:1px solid var(--border);
+    }
+    .result-item {
+      display:flex; align-items:center; gap:14px;
+      padding:14px 16px; background:var(--bg2);
+      border:1px solid var(--border); border-radius:var(--r-md);
+      margin-bottom:8px; text-decoration:none;
+      transition:var(--transition);
+    }
+    .result-item:hover { border-color:var(--gold-dim); transform:translateX(4px); }
+    .result-icon {
+      width:40px; height:40px; border-radius:var(--r-sm);
+      background:var(--bg3); border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.1rem; flex-shrink:0;
+    }
+    .result-name { font-size:0.92rem; font-weight:500; color:var(--text); margin-bottom:2px; }
+    .result-desc { font-size:0.78rem; color:var(--text3); }
+    .result-cat {
+      margin-left:auto; font-size:0.68rem; font-family:var(--font-mono);
+      letter-spacing:0.1em; color:var(--text3); flex-shrink:0;
+      padding:2px 8px; border:1px solid var(--border);
+      border-radius:99px; background:var(--bg3);
+    }
+    .result-count { font-size:0.82rem; color:var(--text3); margin-bottom:20px; }
+    mark { background:var(--gold-dim); color:var(--gold-lt); border-radius:2px; padding:0 2px; }
+    .empty-state { text-align:center; padding:60px 0; color:var(--text3); }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← Home</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav"></div>
+
+<div class="search-page">
+  <p class="section-eyebrow mono">✦ Search everything · #7539</p>
+  <h1 style="font-family:var(--font-disp);font-size:clamp(2rem,4vw,3rem);font-weight:900;margin:10px 0 24px;">
+    Find <em style="color:var(--gold);font-style:italic;">Anything</em>
+  </h1>
+
+  <!-- Big search bar -->
+  <div class="search-bar-big">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20" style="color:var(--text3);flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+    <input type="text" id="main-search" class="search-bar-input" placeholder="Search tools, articles, thoughts..." autofocus />
+    <button id="btn-clear-search" style="color:var(--text3);font-size:0.82rem;padding:4px 8px;border-radius:4px;background:none;border:none;cursor:pointer;display:none;">✕</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="search-filters">
+    <button class="sf-btn active" data-type="all">All</button>
+    <button class="sf-btn" data-type="tools">⚙️ Tools</button>
+    <button class="sf-btn" data-type="articles">📖 Articles</button>
+    <button class="sf-btn" data-type="thoughts">💭 Thoughts</button>
+    <button class="sf-btn" data-type="pages">📄 Pages</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results-wrap">
+    <!-- Default: show popular -->
+    <div id="default-state">
+      <p class="result-section-title">Popular Tools</p>
+      <div id="popular-tools"></div>
+    </div>
+    <div id="search-results" style="display:none;"></div>
+  </div>
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:40px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:760px;margin:0 auto;">
+  <a href="index.html" style="font-family:var(--font-disp);font-size:1rem;font-weight:700;color:var(--text2);text-decoration:none;">Aayush Insights</a>
+  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2024 · #7539</span>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/nav.js"></script>
+<script>
+
+// ── Full site index ───────────────────────────────────────────
+const SITE_INDEX = [
+  // TOOLS
+  {type:'tools', icon:'📊', name:'Word Counter', desc:'Count words, characters, sentences and paragraphs', url:'tools/word-counter.html', cat:'Text'},
+  {type:'tools', icon:'🔡', name:'Case Converter', desc:'UPPERCASE, lowercase, Title Case, camelCase and more', url:'tools/case-converter.html', cat:'Text'},
+  {type:'tools', icon:'🔍', name:'Text Diff Checker', desc:'Compare two texts and highlight all differences', url:'tools/text-diff.html', cat:'Text'},
+  {type:'tools', icon:'🧹', name:'Remove Duplicates', desc:'Remove duplicate lines from any list or dataset', url:'tools/remove-duplicates.html', cat:'Text'},
+  {type:'tools', icon:'🔤', name:'Text Sorter', desc:'Sort lines alphabetically or numerically', url:'tools/text-sorter.html', cat:'Text'},
+  {type:'tools', icon:'🔊', name:'Text to Speech', desc:'Hear any text read aloud in your browser', url:'tools/text-to-speech.html', cat:'Text'},
+  {type:'tools', icon:'✍️', name:'Grammar Checker', desc:'Check for grammar and style issues in your writing', url:'tools/grammar-checker.html', cat:'Text'},
+  {type:'tools', icon:'{}', name:'JSON Formatter', desc:'Format, validate and beautify JSON data', url:'tools/json-formatter.html', cat:'Developer'},
+  {type:'tools', icon:'🔢', name:'Base64 Encoder/Decoder', desc:'Encode and decode text in Base64', url:'tools/base64.html', cat:'Developer'},
+  {type:'tools', icon:'🔗', name:'URL Encoder/Decoder', desc:'Encode and decode URLs for web development', url:'tools/url-encoder.html', cat:'Developer'},
+  {type:'tools', icon:'#️⃣', name:'Hash Generator', desc:'Generate SHA-1, SHA-256, SHA-512 hashes', url:'tools/hash-generator.html', cat:'Developer'},
+  {type:'tools', icon:'⚡', name:'Code Minifier', desc:'Minify HTML, CSS and JavaScript code', url:'tools/minifier.html', cat:'Developer'},
+  {type:'tools', icon:'🔎', name:'Regex Tester', desc:'Test regular expressions with live matching', url:'tools/regex-tester.html', cat:'Developer'},
+  {type:'tools', icon:'📝', name:'Markdown Editor', desc:'Write and preview Markdown in real time', url:'tools/markdown-editor.html', cat:'Developer'},
+  {type:'tools', icon:'🔢', name:'Base Converter', desc:'Convert between Binary, Decimal, Octal, Hexadecimal', url:'tools/base-converter.html', cat:'Developer'},
+  {type:'tools', icon:'🗜️', name:'Image Compressor', desc:'Reduce image file size without losing quality', url:'tools/image-compressor.html', cat:'Image'},
+  {type:'tools', icon:'↔️', name:'Image Resizer', desc:'Resize images to any custom dimensions', url:'tools/image-resizer.html', cat:'Image'},
+  {type:'tools', icon:'🖼️', name:'Image to PDF', desc:'Convert images to PDF documents', url:'tools/image-to-pdf.html', cat:'Image'},
+  {type:'tools', icon:'✂️', name:'Background Remover', desc:'Remove image backgrounds automatically', url:'tools/bg-remover.html', cat:'Image'},
+  {type:'tools', icon:'▣',  name:'QR Code Generator', desc:'Generate QR codes for any URL or text', url:'tools/qr-generator.html', cat:'Image'},
+  {type:'tools', icon:'📎', name:'Merge PDF', desc:'Combine multiple PDF files into one', url:'tools/merge-pdf.html', cat:'PDF'},
+  {type:'tools', icon:'✂️', name:'Split PDF', desc:'Split a PDF into pages or extract a range', url:'tools/split-pdf.html', cat:'PDF'},
+  {type:'tools', icon:'🗜️', name:'PDF Compressor', desc:'Reduce PDF file size in your browser', url:'tools/pdf-compressor.html', cat:'PDF'},
+  {type:'tools', icon:'🔑', name:'Password Generator', desc:'Generate strong random secure passwords', url:'tools/password-generator.html', cat:'Utility'},
+  {type:'tools', icon:'🛡️', name:'Password Strength', desc:'Check how strong your password really is', url:'tools/password-strength.html', cat:'Utility'},
+  {type:'tools', icon:'🎂', name:'Age Calculator', desc:'Calculate exact age from date of birth', url:'tools/age-calculator.html', cat:'Utility'},
+  {type:'tools', icon:'⚖️', name:'Unit Converter', desc:'Convert length, weight, temperature and more', url:'tools/unit-converter.html', cat:'Utility'},
+  {type:'tools', icon:'💱', name:'Currency Converter', desc:'Live exchange rates between 160+ currencies', url:'tools/currency-converter.html', cat:'Utility'},
+  {type:'tools', icon:'🏦', name:'EMI Calculator', desc:'Calculate monthly EMI and total loan interest', url:'tools/emi-calculator.html', cat:'Utility'},
+  {type:'tools', icon:'⚖️', name:'BMI Calculator', desc:'Calculate Body Mass Index with health scale', url:'tools/bmi-calculator.html', cat:'Utility'},
+  {type:'tools', icon:'📊', name:'Loan Comparison', desc:'Compare up to 3 loans side by side', url:'tools/loan-comparison.html', cat:'Utility'},
+  {type:'tools', icon:'🎨', name:'Color Picker', desc:'Pick colors and get HEX, RGB, HSL values', url:'tools/color-picker.html', cat:'Utility'},
+  {type:'tools', icon:'📡', name:'IP Address Lookup', desc:'Find your IP address and location info', url:'tools/ip-lookup.html', cat:'Utility'},
+  {type:'tools', icon:'▶️', name:'YT Thumbnail Downloader', desc:'Download YouTube video thumbnails in HD', url:'tools/yt-thumbnail.html', cat:'Utility'},
+  {type:'tools', icon:'📋', name:'Resume Builder', desc:'Build and download a professional resume as PDF', url:'tools/resume-builder.html', cat:'Utility'},
+  {type:'tools', icon:'🧾', name:'Invoice Generator', desc:'Create and download professional invoices', url:'tools/invoice-generator.html', cat:'Utility'},
+  {type:'tools', icon:'🤖', name:'AI Content Detector', desc:'Check if text was likely written by AI', url:'tools/ai-detector.html', cat:'Utility'},
+  {type:'tools', icon:'✨', name:'AI Humanizer', desc:'Make AI text sound more natural and human', url:'tools/ai-humanizer.html', cat:'Utility'},
+  {type:'tools', icon:'🎲', name:'Random Generator', desc:'Numbers, picker, coin flip, dice, UUID', url:'tools/random-generator.html', cat:'Utility'},
+  {type:'tools', icon:'🧮', name:'Scientific Calculator', desc:'Full scientific calculator with history', url:'tools/calculator.html', cat:'Utility'},
+  {type:'tools', icon:'🍅', name:'Pomodoro Timer', desc:'Focus timer with work sessions and breaks', url:'tools/pomodoro.html', cat:'Productivity'},
+  {type:'tools', icon:'⏱️', name:'Stopwatch & Timer', desc:'Stopwatch with laps and countdown timer', url:'tools/stopwatch.html', cat:'Productivity'},
+  {type:'tools', icon:'📒', name:'Notes App', desc:'Quick notes saved in your browser', url:'tools/notes-app.html', cat:'Productivity'},
+  {type:'tools', icon:'⌨️', name:'Typing Speed Test', desc:'Test your WPM and accuracy', url:'tools/typing-test.html', cat:'Productivity'},
+  {type:'tools', icon:'✅', name:'Habit Tracker', desc:'Track daily habits and streaks, saved in browser', url:'tools/habit-tracker.html', cat:'Productivity'},
+
+  // ARTICLES
+  {type:'articles', icon:'🌌', name:'The Universe Started From Nothing', desc:'13.8 billion years, a singularity, and why it should change how you see everything', url:'blog/universe-singularity.html', cat:'Crazy Thoughts'},
+  {type:'articles', icon:'🔐', name:'Why Cybersecurity Matters This Decade', desc:'Every system, every person is a target — coming soon', url:'blog/index.html', cat:'Research'},
+  {type:'articles', icon:'🧠', name:'Social Media Is Designed to Make You Feel Small', desc:'My honest opinion on algorithms — coming soon', url:'blog/index.html', cat:'Opinion'},
+  {type:'articles', icon:'🎸', name:'What Guitar Taught Me About Patience', desc:'Learning an instrument teaches you how to learn anything', url:'blog/index.html', cat:'Experience'},
+
+  // THOUGHTS
+  {type:'thoughts', icon:'💭', name:'On Consciousness', desc:'What if consciousness is just what it feels like to be a pattern complex enough to model itself?', url:'thoughts/index.html', cat:'Crazy Idea'},
+  {type:'thoughts', icon:'🔐', name:'On Cybersecurity', desc:'Cybersecurity is not about technology — it is about human psychology', url:'thoughts/index.html', cat:'Opinion'},
+  {type:'thoughts', icon:'🎸', name:'On Guitar', desc:'The guitar is honest. You can\'t fake it. The sound tells the truth every time.', url:'thoughts/index.html', cat:'Thought'},
+  {type:'thoughts', icon:'🌌', name:'On the Universe', desc:'What if the universe loops back on itself at a scale so large we can never detect the edge?', url:'thoughts/index.html', cat:'Crazy Idea'},
+  {type:'thoughts', icon:'💡', name:'On Motivation', desc:'Most people are not lazy — they are doing tasks that don\'t connect to anything they care about', url:'thoughts/index.html', cat:'Opinion'},
+
+  // PAGES
+  {type:'pages', icon:'🌐', name:'Home', desc:'The main Aayush Insights homepage', url:'index.html', cat:'Page'},
+  {type:'pages', icon:'⚙️', name:'Tools Hub', desc:'All 45+ free tools in one place', url:'tools/index.html', cat:'Page'},
+  {type:'pages', icon:'📖', name:'Writings', desc:'Deep research articles and honest opinions', url:'blog/index.html', cat:'Page'},
+  {type:'pages', icon:'💭', name:'Thoughts', desc:'Raw unfiltered ideas and observations', url:'thoughts/index.html', cat:'Page'},
+  {type:'pages', icon:'🚀', name:'Projects', desc:'Things Aayush has built', url:'projects.html', cat:'Page'},
+  {type:'pages', icon:'📚', name:'Reading List', desc:'Books and resources Aayush recommends', url:'reading-list.html', cat:'Page'},
+  {type:'pages', icon:'✉️', name:'Contact', desc:'Get in touch with Aayush Kurmi', url:'contact.html', cat:'Page'},
+  {type:'pages', icon:'🔒', name:'Privacy Policy', desc:'How your data is handled on this site', url:'privacy.html', cat:'Page'},
+];
+
+const POPULAR = ['Password Generator','QR Code Generator','JSON Formatter','Word Counter','Currency Converter','Age Calculator','Resume Builder','BMI Calculator'];
+
+let currentType = 'all';
+let currentQuery = '';
+
+// ── Highlight matches ─────────────────────────────────────────
+function highlight(text, query) {
+  if (!query) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
+// ── Render results ────────────────────────────────────────────
+function renderResults() {
+  const wrap    = document.getElementById('search-results');
+  const defState = document.getElementById('default-state');
+  const q = currentQuery.toLowerCase().trim();
+
+  if (!q) {
+    wrap.style.display = 'none';
+    defState.style.display = 'block';
+    return;
+  }
+
+  wrap.style.display = 'block';
+  defState.style.display = 'none';
+
+  const filtered = SITE_INDEX.filter(item => {
+    const typeMatch = currentType === 'all' || item.type === currentType;
+    const textMatch = item.name.toLowerCase().includes(q) || item.desc.toLowerCase().includes(q) || item.cat.toLowerCase().includes(q);
+    return typeMatch && textMatch;
+  });
+
+  if (!filtered.length) {
+    wrap.innerHTML = `<div class="empty-state">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🔍</div>
+      <p style="font-size:1rem;color:var(--text2);">No results for "<strong>${q}</strong>"</p>
+      <p style="font-size:0.85rem;margin-top:8px;">Try a different keyword</p>
+    </div>`;
+    return;
+  }
+
+  // Group by type
+  const groups = { tools:'⚙️ Tools', articles:'📖 Articles', thoughts:'💭 Thoughts', pages:'📄 Pages' };
+  let html = `<p class="result-count">${filtered.length} result${filtered.length!==1?'s':''} for "<strong>${q}</strong>"</p>`;
+
+  Object.keys(groups).forEach(type => {
+    const items = filtered.filter(i => i.type === type);
+    if (!items.length) return;
+    html += `<div class="result-section">
+      <div class="result-section-title">${groups[type]} (${items.length})</div>
+      ${items.map(item => `
+        <a href="${item.url}" class="result-item">
+          <div class="result-icon">${item.icon}</div>
+          <div style="flex:1;min-width:0;">
+            <div class="result-name">${highlight(item.name, q)}</div>
+            <div class="result-desc">${highlight(item.desc, q)}</div>
+          </div>
+          <span class="result-cat">${item.cat}</span>
+        </a>`).join('')}
+    </div>`;
+  });
+
+  wrap.innerHTML = html;
+}
+
+// ── Popular tools default state ───────────────────────────────
+function renderPopular() {
+  const popular = SITE_INDEX.filter(i => POPULAR.includes(i.name));
+  document.getElementById('popular-tools').innerHTML = popular.map(item => `
+    <a href="${item.url}" class="result-item">
+      <div class="result-icon">${item.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div class="result-name">${item.name}</div>
+        <div class="result-desc">${item.desc}</div>
+      </div>
+      <span class="result-cat">${item.cat}</span>
+    </a>`).join('');
+}
+
+// ── Event listeners ───────────────────────────────────────────
+const searchInput = document.getElementById('main-search');
+const clearBtn    = document.getElementById('btn-clear-search');
+
+searchInput.addEventListener('input', e => {
+  currentQuery = e.target.value;
+  clearBtn.style.display = currentQuery ? 'block' : 'none';
+  renderResults();
+});
+
+clearBtn.addEventListener('click', () => {
+  searchInput.value = '';
+  currentQuery = '';
+  clearBtn.style.display = 'none';
+  renderResults();
+  searchInput.focus();
+});
+
+document.querySelectorAll('.sf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sf-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentType = btn.dataset.type;
+    renderResults();
+  });
+});
+
+// ── Handle URL query param ?q=search ─────────────────────────
+const urlQ = new URLSearchParams(window.location.search).get('q');
+if (urlQ) { searchInput.value = urlQ; currentQuery = urlQ; clearBtn.style.display='block'; renderResults(); }
+
+renderPopular();
+</script>
+</body>
+</html>

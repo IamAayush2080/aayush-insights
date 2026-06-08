@@ -33,6 +33,7 @@
         <li><a href="${root}projects.html"${isProjects?' class="active"':''}>Projects</a></li>
         <li><a href="${root}reading-list.html"${isReading?' class="active"':''}>Reading</a></li>
         <li><a href="${root}contact.html"${isContact?' class="active"':''}>Contact</a></li>
+        <li><a href="${root}search.html" style="display:flex;align-items:center;gap:4px;">🔍 Search</a></li>
       `;
     }
   }
@@ -48,12 +49,22 @@
       <a href="${root}projects.html">Projects</a>
       <a href="${root}reading-list.html">Reading</a>
       <a href="${root}contact.html">Contact</a>
+      <a href="${root}search.html">🔍 Search</a>
     `;
   }
 
   /* ── Update nav CTA href ────────────────────────────────── */
   const cta = document.querySelector('.nav-cta');
   if (cta && !inSub) cta.href = '#main-tabs';
+
+
+  /* ── Register Service Worker (PWA) ────────────────────── */
+  if ('serviceWorker' in navigator) {
+    const swPath = root + 'sw.js';
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register(swPath).catch(() => {});
+    });
+  }
 
   /* ── Back to top button ─────────────────────────────────── */
   const btn = document.createElement('button');

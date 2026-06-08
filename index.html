@@ -9,6 +9,11 @@
   <meta property="og:title" content="Aayush Insights" />
   <meta property="og:description" content="Free tools for everyone. Deep research & unfiltered thoughts by Aayush Kurmi." />
   <meta property="og:type" content="website" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Aayush Insights" />
+  <link rel="apple-touch-icon" href="assets/img/icon-192.png" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/theme.css" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
@@ -29,6 +34,7 @@
     <li><a href="projects.html">Projects</a></li>
     <li><a href="reading-list.html">Reading</a></li>
     <li><a href="contact.html">Contact</a></li>
+    <li><a href="search.html">🔍 Search</a></li>
   </ul>
   <a href="#main-tabs" class="nav-cta">Explore →</a>
   <button id="theme-toggle" title="Toggle theme">☀️</button>
@@ -45,6 +51,7 @@
   <a href="projects.html">Projects</a>
   <a href="reading-list.html">Reading</a>
   <a href="contact.html">Contact</a>
+  <a href="search.html">🔍 Search</a>
 </div>
 
 <!-- ══ HERO ════════════════════════════════════════════════════ -->
@@ -290,5 +297,14 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/theme.js"></script>
 <script src="assets/js/nav.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW registered'))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+</script>
 </body>
 </html>
