@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://aayush-insights.is-a.dev/sitemap.xml
+ 
