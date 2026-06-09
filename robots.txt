@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://IamAayush2080.github.io/aayush-insights/sitemap.xml
+Sitemap: https://aayush-insights.is-a.dev/sitemap.xml

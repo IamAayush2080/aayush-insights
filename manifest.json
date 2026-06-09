@@ -2,8 +2,8 @@
   "name": "Aayush Insights",
   "short_name": "Aayush Insights",
   "description": "Free tools, deep research and unfiltered thoughts by Aayush Kurmi. #7539",
-  "start_url": "/aayush-insights/index.html",
-  "scope": "/aayush-insights/",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0f",
   "theme_color": "#c9a84c",
@@ -26,19 +26,19 @@
     {
       "name": "Tools Hub",
       "short_name": "Tools",
-      "url": "/aayush-insights/tools/index.html",
+      "url": "/tools/index.html",
       "description": "Access all 45+ free tools"
     },
     {
       "name": "Writings",
       "short_name": "Blog",
-      "url": "/aayush-insights/blog/index.html",
+      "url": "/blog/index.html",
       "description": "Read articles and research"
     },
     {
       "name": "Thoughts",
       "short_name": "Thoughts",
-      "url": "/aayush-insights/thoughts/index.html",
+      "url": "/thoughts/index.html",
       "description": "Raw unfiltered thoughts"
     }
   ],

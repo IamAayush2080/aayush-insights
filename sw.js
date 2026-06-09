@@ -5,21 +5,21 @@
 const CACHE_NAME = 'aayush-insights-v1';
 
 const CORE_ASSETS = [
-  '/aayush-insights/',
-  '/aayush-insights/index.html',
-  '/aayush-insights/assets/css/style.css',
-  '/aayush-insights/assets/css/theme.css',
-  '/aayush-insights/assets/js/main.js',
-  '/aayush-insights/assets/js/theme.js',
-  '/aayush-insights/assets/js/nav.js',
-  '/aayush-insights/tools/index.html',
-  '/aayush-insights/blog/index.html',
-  '/aayush-insights/thoughts/index.html',
-  '/aayush-insights/contact.html',
-  '/aayush-insights/projects.html',
-  '/aayush-insights/reading-list.html',
-  '/aayush-insights/search.html',
-  '/aayush-insights/404.html',
+  '/',
+  '/index.html',
+  '/assets/css/style.css',
+  '/assets/css/theme.css',
+  '/assets/js/main.js',
+  '/assets/js/theme.js',
+  '/assets/js/nav.js',
+  '/tools/index.html',
+  '/blog/index.html',
+  '/thoughts/index.html',
+  '/contact.html',
+  '/projects.html',
+  '/reading-list.html',
+  '/search.html',
+  '/404.html',
 ];
 
 /* ── Install: cache core assets ───────────────────────────── */
@@ -48,7 +48,7 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   // Skip external APIs (currency, IP lookup etc)
-  if (!url.hostname.includes('github.io') && !url.hostname.includes('is-a.dev') && !url.hostname.includes('localhost')) {
+  if (!url.hostname.includes('is-a.dev') && !url.hostname.includes('github.io') && !url.hostname.includes('localhost')) {
     return;
   }
 
@@ -83,7 +83,7 @@ self.addEventListener('fetch', event => {
       })
       .catch(() =>
         caches.match(event.request)
-          .then(cached => cached || caches.match('/aayush-insights/404.html'))
+          .then(cached => cached || caches.match('/404.html'))
       )
   );
 });

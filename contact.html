@@ -103,24 +103,12 @@
     <span class="nav-logo-text">Aayush Insights</span>
     <span class="nav-logo-num">#7539</span>
   </a>
-  <ul class="nav-links">
-    <li><a href="index.html#about">About</a></li>
-    <li><a href="tools/index.html">Tools</a></li>
-    <li><a href="blog/index.html">Writings</a></li>
-    <li><a href="thoughts/index.html">Thoughts</a></li>
-    <li><a href="contact.html" class="active">Contact</a></li>
-  </ul>
+  <ul class="nav-links"></ul>
   <button id="theme-toggle" title="Toggle theme">☀️</button>
   <a href="index.html" class="nav-cta">← Home</a>
   <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
-<div id="mobile-nav">
-  <a href="index.html#about">About</a>
-  <a href="tools/index.html">Tools</a>
-  <a href="blog/index.html">Writings</a>
-  <a href="thoughts/index.html">Thoughts</a>
-  <a href="contact.html">Contact</a>
-</div>
+<div id="mobile-nav"></div>
 
 <div class="contact-page">
 
@@ -139,7 +127,7 @@
       <div class="contact-card-icon">📧</div>
       <div>
         <div class="contact-card-label">Email</div>
-        <div class="contact-card-value">ak2183874@gmail.com</div>
+        <div class="contact-card-value">youremail@gmail.com</div>
       </div>
     </a>
     <a href="https://github.com/IamAayush2080" target="_blank" class="contact-card">
@@ -153,14 +141,14 @@
       <div class="contact-card-icon">🐦</div>
       <div>
         <div class="contact-card-label">Twitter / X</div>
-        <div class="contact-card-value">Not Available</div>
+        <div class="contact-card-value">@yourusername</div>
       </div>
     </a>
     <a href="#" class="contact-card">
       <div class="contact-card-icon">💼</div>
       <div>
         <div class="contact-card-label">LinkedIn</div>
-        <div class="contact-card-value">Not Active</div>
+        <div class="contact-card-value">Aayush Kurmi</div>
       </div>
     </a>
   </div>
@@ -169,8 +157,14 @@
   <div class="contact-form-wrap">
     <p style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.2em;margin-bottom:24px;">✦ SEND A MESSAGE</p>
 
-    
-    <form id="contact-form" action="https://formspree.io/f/xjgdyjpo" method="POST">
+    <!--
+      SETUP: Replace YOUR_FORM_ID with your Formspree form ID.
+      1. Go to formspree.io → Sign up free
+      2. Create a new form → copy the ID (looks like "xrgvkpqz")
+      3. Replace YOUR_FORM_ID below
+      Free plan: 50 submissions/month — no backend needed.
+    -->
+    <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Your Name</label>
@@ -199,8 +193,8 @@
   <!-- Note about Formspree setup -->
   <div style="margin-top:16px;background:var(--gold-dim);border:1px solid var(--gold-dim);border-radius:var(--r-md);padding:14px 18px;">
     <p style="font-size:0.82rem;color:var(--gold-lt);">
-      <strong></strong>  <code style="background:rgba(0,0,0,0.2);padding:1px 6px;border-radius:3px;"></code>  
-      <a href="https://formspree.io" target="_blank" style="color:var(--gold);text-decoration:underline;"></a> — .
+      <strong>Setup needed:</strong> Replace <code style="background:rgba(0,0,0,0.2);padding:1px 6px;border-radius:3px;">YOUR_FORM_ID</code> in this file with your free Formspree form ID from
+      <a href="https://formspree.io" target="_blank" style="color:var(--gold);text-decoration:underline;">formspree.io</a> — takes 2 minutes.
     </p>
   </div>
 
