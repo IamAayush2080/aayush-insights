@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Epoch Timestamp Converter — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav"></div>
+
+<div class="tool-page" style="max-width:700px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">⏰</div>
+    <h1 class="tool-page-title">Epoch Timestamp</h1>
+    <p class="tool-page-desc">Convert Unix timestamps to human-readable dates and vice versa. Updates every second.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Current time live -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:24px;text-align:center;">
+      <p style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.2em;margin-bottom:12px;">✦ CURRENT TIME</p>
+      <div id="live-epoch" style="font-family:var(--font-disp);font-size:2.8rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:8px;cursor:pointer;transition:var(--transition);" title="Click to copy"></div>
+      <div id="live-human" style="font-size:0.95rem;color:var(--text2);margin-bottom:6px;"></div>
+      <div id="live-iso"   style="font-size:0.82rem;color:var(--text3);font-family:var(--font-mono);"></div>
+      <p style="font-size:0.72rem;color:var(--text3);margin-top:10px;">Click the number to copy epoch · Updates every second</p>
+    </div>
+
+    <!-- Epoch → Date -->
+    <div class="tool-section-card" style="margin-bottom:16px;">
+      <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">EPOCH → HUMAN DATE</span></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+        <input type="number" id="epoch-input" class="tool-input" style="flex:1;" placeholder="Enter Unix timestamp..." />
+        <select class="tool-select" id="epoch-unit">
+          <option value="s">Seconds</option>
+          <option value="ms">Milliseconds</option>
+        </select>
+        <button class="btn-primary" id="btn-epoch2date" style="padding:8px 20px;">Convert →</button>
+      </div>
+      <div id="epoch-result" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="epoch-cards"></div>
+      </div>
+    </div>
+
+    <!-- Date → Epoch -->
+    <div class="tool-section-card" style="margin-bottom:16px;">
+      <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">HUMAN DATE → EPOCH</span></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">
+        <input type="datetime-local" id="date-input" class="tool-input" style="flex:1;" />
+        <button class="btn-primary" id="btn-date2epoch" style="padding:8px 20px;">Convert →</button>
+      </div>
+      <div id="date-result" style="display:none;" class="tool-section-card" style="margin-top:10px;">
+        <div id="date-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;"></div>
+      </div>
+    </div>
+
+    <!-- Reference table -->
+    <div class="tool-section-card">
+      <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">QUICK REFERENCE</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="ref-table"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+// Live clock
+function updateLive() {
+  const now = new Date();
+  const epoch = Math.floor(now.getTime() / 1000);
+  document.getElementById('live-epoch').textContent = epoch;
+  document.getElementById('live-human').textContent = now.toLocaleString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('live-iso').textContent = now.toISOString();
+}
+setInterval(updateLive, 1000);
+updateLive();
+
+document.getElementById('live-epoch').addEventListener('click', () => {
+  const epoch = document.getElementById('live-epoch').textContent;
+  navigator.clipboard.writeText(epoch);
+  document.getElementById('live-epoch').style.color = '#4ade80';
+  setTimeout(() => document.getElementById('live-epoch').style.color = 'var(--gold)', 800);
+});
+
+// Set default date to now
+document.getElementById('date-input').value = new Date().toISOString().slice(0,16);
+
+function resultCard(label, value) {
+  return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;">
+    <div style="font-size:0.68rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;margin-bottom:5px;">${label}</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <code style="font-family:var(--font-mono);font-size:0.82rem;color:var(--text);flex:1;word-break:break-all;">${value}</code>
+      <button class="toolbar-btn" onclick="navigator.clipboard.writeText('${value}')" style="font-size:0.7rem;padding:2px 8px;flex-shrink:0;">Copy</button>
+    </div>
+  </div>`;
+}
+
+// Epoch → Date
+document.getElementById('btn-epoch2date').addEventListener('click', () => {
+  let epoch = parseFloat(document.getElementById('epoch-input').value);
+  if (isNaN(epoch)) return;
+  const unit = document.getElementById('epoch-unit').value;
+  const ms   = unit === 'ms' ? epoch : epoch * 1000;
+  const d    = new Date(ms);
+  if (isNaN(d.getTime())) return;
+
+  const cards = [
+    ['UTC', d.toUTCString()],
+    ['ISO 8601', d.toISOString()],
+    ['Local Date', d.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'})],
+    ['Local Time', d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})],
+    ['Unix (seconds)', Math.floor(ms/1000).toString()],
+    ['Unix (ms)', ms.toString()],
+  ];
+  document.getElementById('epoch-cards').innerHTML = cards.map(([l,v])=>resultCard(l,v)).join('');
+  document.getElementById('epoch-result').style.display = 'block';
+});
+
+// Date → Epoch
+document.getElementById('btn-date2epoch').addEventListener('click', () => {
+  const val = document.getElementById('date-input').value;
+  if (!val) return;
+  const d   = new Date(val);
+  const ms  = d.getTime();
+  const sec = Math.floor(ms/1000);
+  const cards = [
+    ['Unix Seconds', sec.toString()],
+    ['Unix Milliseconds', ms.toString()],
+    ['ISO 8601', d.toISOString()],
+    ['UTC String', d.toUTCString()],
+  ];
+  document.getElementById('date-cards').innerHTML = cards.map(([l,v])=>resultCard(l,v)).join('');
+  document.getElementById('date-result').style.display = 'block';
+});
+
+// Reference table
+const now = Date.now();
+const refs = [
+  ['1 minute ago', Math.floor((now - 60000)/1000)],
+  ['1 hour ago',   Math.floor((now - 3600000)/1000)],
+  ['Yesterday',    Math.floor((now - 86400000)/1000)],
+  ['1 week ago',   Math.floor((now - 604800000)/1000)],
+  ['Start of 2024',Math.floor(new Date('2024-01-01').getTime()/1000)],
+  ['Unix epoch 0', 0],
+];
+document.getElementById('ref-table').innerHTML = refs.map(([l,v])=>`
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;cursor:pointer;" onclick="document.getElementById('epoch-input').value='${v}';document.getElementById('btn-epoch2date').click();" title="Click to convert">
+    <div style="font-size:0.7rem;color:var(--text3);font-family:var(--font-mono);margin-bottom:3px;">${l}</div>
+    <div style="font-family:var(--font-mono);font-size:0.82rem;color:var(--gold);">${v}</div>
+  </div>`).join('');
+</script>
+</body>
+</html>

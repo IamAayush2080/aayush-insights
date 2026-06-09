@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Aayush Insights</title>
+  <meta name="description" content="About Aayush Kurmi — self-driven explorer, cybersecurity enthusiast, guitar player and builder of Aayush Insights." />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>" />
+  <style>
+    .about-page { max-width:1000px; margin:0 auto; padding:120px 5% 80px; }
+
+    /* Hero */
+    .about-hero { display:grid; grid-template-columns:1fr 320px; gap:60px; align-items:center; margin-bottom:80px; }
+    @media(max-width:760px){ .about-hero{ grid-template-columns:1fr; } .about-photo-wrap{ order:-1; max-width:260px; margin:0 auto; } }
+
+    .about-photo-wrap { position:relative; }
+    .about-photo-frame {
+      width:100%; aspect-ratio:3/4; border-radius:var(--r-lg);
+      overflow:hidden; position:relative;
+    }
+    .about-photo-frame::before {
+      content:''; position:absolute; inset:-2px;
+      background:linear-gradient(135deg,var(--gold),var(--accent),transparent 60%);
+      border-radius:var(--r-lg); z-index:0;
+    }
+    .about-photo-frame img {
+      width:100%; height:100%; object-fit:cover; object-position:center top;
+      border-radius:calc(var(--r-lg) - 2px); position:relative; z-index:1;
+    }
+    .about-num-badge {
+      position:absolute; top:-12px; right:-12px;
+      background:var(--accent); color:white;
+      font-family:var(--font-mono); font-size:0.7rem;
+      padding:6px 12px; border-radius:99px; letter-spacing:0.1em; z-index:2;
+    }
+    .about-status-badge {
+      position:absolute; bottom:-16px; left:20px;
+      background:var(--bg2); border:1px solid var(--border2);
+      border-radius:var(--r-md); padding:10px 16px;
+      display:flex; align-items:center; gap:10px; z-index:2;
+      backdrop-filter:blur(8px);
+    }
+    .status-dot { width:8px; height:8px; border-radius:50%; background:#4ade80; box-shadow:0 0 0 3px rgba(74,222,128,0.2); animation:pulse 2s ease infinite; }
+
+    /* Section divider */
+    .section-divider { border:none; border-top:1px solid var(--border); margin:60px 0; }
+
+    /* Timeline */
+    .timeline { position:relative; padding-left:32px; }
+    .timeline::before { content:''; position:absolute; left:0; top:8px; bottom:8px; width:2px; background:linear-gradient(to bottom,var(--gold),var(--accent),transparent); border-radius:2px; }
+    .tl-item { position:relative; margin-bottom:36px; }
+    .tl-dot { position:absolute; left:-38px; top:6px; width:12px; height:12px; border-radius:50%; background:var(--gold); border:2px solid var(--bg); box-shadow:0 0 0 2px var(--gold); flex-shrink:0; }
+    .tl-year { font-family:var(--font-mono); font-size:0.72rem; color:var(--gold); letter-spacing:0.15em; margin-bottom:4px; }
+    .tl-title { font-size:1rem; font-weight:600; color:var(--text); margin-bottom:4px; }
+    .tl-desc { font-size:0.88rem; color:var(--text2); line-height:1.7; }
+
+    /* Interest cards */
+    .interests-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; }
+    .interest-card {
+      background:var(--bg2); border:1px solid var(--border);
+      border-radius:var(--r-lg); padding:24px 20px;
+      text-align:center; transition:var(--transition);
+    }
+    .interest-card:hover { border-color:var(--border2); transform:translateY(-3px); }
+    .interest-icon { font-size:2.2rem; margin-bottom:12px; }
+    .interest-name { font-size:0.95rem; font-weight:600; color:var(--text); margin-bottom:4px; }
+    .interest-desc { font-size:0.8rem; color:var(--text3); line-height:1.5; }
+
+    /* Values */
+    .values-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    @media(max-width:560px){ .values-grid{ grid-template-columns:1fr; } }
+    .value-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); padding:20px; }
+    .value-title { font-size:0.95rem; font-weight:600; color:var(--text); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+    .value-desc { font-size:0.85rem; color:var(--text2); line-height:1.6; }
+
+    /* Quote */
+    .big-quote { font-family:var(--font-disp); font-size:clamp(1.3rem,3vw,2rem); font-style:italic; color:var(--text2); line-height:1.5; border-left:3px solid var(--gold); padding:16px 24px; margin:40px 0; background:var(--gold-glow); border-radius:0 var(--r-md) var(--r-md) 0; }
+
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,0.2)} 50%{box-shadow:0 0 0 6px rgba(74,222,128,0.05)} }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← Home</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav"></div>
+
+<div class="about-page">
+
+  <!-- Hero section -->
+  <div class="about-hero">
+    <div>
+      <p class="section-eyebrow mono">✦ About me · #7539</p>
+      <h1 style="font-family:var(--font-disp);font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1.05;margin:12px 0 20px;">
+        Hi, I'm <em style="color:var(--gold);font-style:italic;">Aayush.</em>
+      </h1>
+      <p style="font-size:1.05rem;color:var(--text2);line-height:1.8;margin-bottom:20px;max-width:500px;">
+        Self-driven explorer finding my own way — with small steps — in this vast universe that originated from a singularity, in comparison to which I am nothing. But still believing. Still searching for the mysterious.
+      </p>
+      <p style="font-size:0.95rem;color:var(--text2);line-height:1.8;margin-bottom:32px;max-width:500px;">
+        I built Aayush Insights because I believe good tools and honest ideas should be free for everyone. No paywalls. No gatekeeping. No ads. Just value.
+      </p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="contact.html" class="btn-primary" style="padding:10px 24px;">Get in Touch →</a>
+        <a href="projects.html" class="btn-secondary" style="padding:10px 20px;border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);font-size:0.9rem;display:inline-flex;align-items:center;">See Projects</a>
+      </div>
+    </div>
+
+    <div class="about-photo-wrap">
+      <div class="about-photo-frame">
+        <img src="assets/img/aayush.jpg" alt="Aayush Kurmi" />
+      </div>
+      <div class="about-num-badge">#7539</div>
+      <div class="about-status-badge">
+        <div class="status-dot"></div>
+        <span style="font-size:0.78rem;color:var(--text2);">Building & exploring</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick facts -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:60px;">
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center;">
+      <div style="font-family:var(--font-disp);font-size:2rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:6px;">45+</div>
+      <div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;">Free Tools Built</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center;">
+      <div style="font-family:var(--font-disp);font-size:2rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:6px;">7539</div>
+      <div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;">My Number</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center;">
+      <div style="font-family:var(--font-disp);font-size:2rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:6px;">∞</div>
+      <div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;">Curiosity</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;text-align:center;">
+      <div style="font-family:var(--font-disp);font-size:2rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:6px;">Free</div>
+      <div style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.1em;text-transform:uppercase;">Everything, Always</div>
+    </div>
+  </div>
+
+  <!-- Big quote -->
+  <div class="big-quote">
+    "I am finding my own way with small steps in this verse which originated from the singularity — in comparison to which I am nothing — but still believing and finding the mysterious."
+    <div style="font-size:0.85rem;color:var(--text3);font-style:normal;margin-top:12px;font-family:var(--font-mono);">— Aayush Kurmi</div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- Interests -->
+  <div style="margin-bottom:60px;">
+    <p class="section-eyebrow mono">✦ What I'm into</p>
+    <h2 style="font-family:var(--font-disp);font-size:2rem;font-weight:700;margin:10px 0 32px;">Interests & Passions</h2>
+    <div class="interests-grid">
+      <div class="interest-card">
+        <div class="interest-icon">🔐</div>
+        <div class="interest-name">Cybersecurity</div>
+        <div class="interest-desc">Exploring digital security, ethical hacking concepts and how systems can be protected and broken</div>
+      </div>
+      <div class="interest-card">
+        <div class="interest-icon">🎸</div>
+        <div class="interest-name">Guitar</div>
+        <div class="interest-desc">Music as a language beyond words. Learning that patience and systems matter more than talent</div>
+      </div>
+      <div class="interest-card">
+        <div class="interest-icon">🌌</div>
+        <div class="interest-name">Cosmology</div>
+        <div class="interest-desc">Fascinated by the universe, its origins, scale and what existence itself actually means</div>
+      </div>
+      <div class="interest-card">
+        <div class="interest-icon">🔧</div>
+        <div class="interest-name">Building Things</div>
+        <div class="interest-desc">Creating free tools and projects that actually help people — no monetisation, just value</div>
+      </div>
+      <div class="interest-card">
+        <div class="interest-icon">📚</div>
+        <div class="interest-name">Reading</div>
+        <div class="interest-desc">Books on cosmology, psychology, technology and philosophy — anything that changes how I think</div>
+      </div>
+      <div class="interest-card">
+        <div class="interest-icon">✍️</div>
+        <div class="interest-name">Writing</div>
+        <div class="interest-desc">Deep research articles and raw unfiltered thoughts — writing to think, not just to publish</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- Journey / Timeline -->
+  <div style="margin-bottom:60px;">
+    <p class="section-eyebrow mono">✦ My journey</p>
+    <h2 style="font-family:var(--font-disp);font-size:2rem;font-weight:700;margin:10px 0 40px;">Where I've Been</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">EARLY DAYS</div>
+        <div class="tl-title">Curiosity about how things work</div>
+        <div class="tl-desc">Always the one asking "but why?" and "how does that actually work?" — questioning everything from technology to existence itself.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">CYBERSECURITY</div>
+        <div class="tl-title">Discovering digital security</div>
+        <div class="tl-desc">Started exploring cybersecurity — understanding how systems are built, how they break, and how to protect them. Still going deep on this.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">GUITAR</div>
+        <div class="tl-title">Picking up the strings</div>
+        <div class="tl-desc">Started learning guitar. Discovered it teaches you more about how to learn anything than any book on learning ever could. The instrument is brutally honest.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2024</div>
+        <div class="tl-title">Built Aayush Insights</div>
+        <div class="tl-desc">Built this site from scratch — 45+ free tools, articles, thoughts. Hosted free on GitHub Pages. No ads. No paywalls. Just useful things for people.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="background:var(--accent);box-shadow:0 0 0 2px var(--accent);"></div>
+        <div class="tl-year">NOW</div>
+        <div class="tl-title">Finding the path</div>
+        <div class="tl-desc">Still exploring. Still building. Achievements on the way — you'll know when it's time. The journey is what matters right now.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- Values -->
+  <div style="margin-bottom:60px;">
+    <p class="section-eyebrow mono">✦ What I believe</p>
+    <h2 style="font-family:var(--font-disp);font-size:2rem;font-weight:700;margin:10px 0 32px;">My Values</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-title"><span>🆓</span> Free for everyone</div>
+        <div class="value-desc">Good tools and honest information should never be locked behind a paywall. Everything on this site is free and always will be.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title"><span>🎯</span> Honest over popular</div>
+        <div class="value-desc">I'd rather write something true that few people read than something popular that says nothing. Honesty first, always.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title"><span>🔍</span> Question everything</div>
+        <div class="value-desc">Don't accept things at face value. Ask why. Go deeper. The most interesting answers are always one more question away.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-title"><span>👣</span> Small steps compound</div>
+        <div class="value-desc">No one teleports to the top. Every mountain is climbed one step at a time. Consistency over intensity, always.</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- About this site -->
+  <div style="margin-bottom:60px;">
+    <p class="section-eyebrow mono">✦ About this site</p>
+    <h2 style="font-family:var(--font-disp);font-size:2rem;font-weight:700;margin:10px 0 20px;">What is Aayush Insights?</h2>
+    <p style="font-size:0.95rem;color:var(--text2);line-height:1.85;max-width:680px;margin-bottom:16px;">
+      Aayush Insights started as a personal project — a place to put free tools that I wanted to exist, and thoughts I wanted to write down. It grew into something with 45+ tools, a blog, a thoughts section, and a growing collection of resources.
+    </p>
+    <p style="font-size:0.95rem;color:var(--text2);line-height:1.85;max-width:680px;margin-bottom:32px;">
+      It is built entirely with pure HTML, CSS and JavaScript. No frameworks. No backend. No database. Hosted free on GitHub Pages. The number <strong style="color:var(--gold);">#7539</strong> appears everywhere — it's my signature, my number. If you see it, you know it's mine.
+    </p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <a href="tools/index.html" class="btn-primary" style="padding:10px 24px;">Explore Tools →</a>
+      <a href="blog/index.html" class="btn-secondary" style="padding:10px 20px;border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);font-size:0.9rem;display:inline-flex;align-items:center;">Read Articles</a>
+      <a href="contact.html" class="btn-secondary" style="padding:10px 20px;border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text2);font-size:0.9rem;display:inline-flex;align-items:center;">Say Hi</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer style="border-top:1px solid var(--border);padding:40px 5%;max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+  <a href="index.html" style="font-family:var(--font-disp);font-size:1rem;font-weight:700;color:var(--text2);text-decoration:none;">Aayush Insights</a>
+  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2024 · Aayush Kurmi · #7539</span>
+  <a href="privacy.html" style="font-size:0.78rem;color:var(--text3);text-decoration:none;">Privacy</a>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/nav.js"></script>
+</body>
+</html>

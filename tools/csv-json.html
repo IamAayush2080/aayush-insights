@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSV ↔ JSON Converter — Aayush Insights</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" /><link rel="stylesheet" href="tool-page.css" />
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav"></div>
+
+<div class="tool-page">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">🔄</div>
+    <h1 class="tool-page-title">CSV ↔ JSON Converter</h1>
+    <p class="tool-page-desc">Convert CSV to JSON or JSON to CSV instantly. Handles headers, nested data and large files.</p>
+  </div>
+  <div class="tool-page-body">
+
+    <!-- Mode tabs -->
+    <div class="tab-nav" style="margin-bottom:24px;">
+      <button class="tab-btn active" data-tab="csv2json">CSV → JSON</button>
+      <button class="tab-btn" data-tab="json2csv">JSON → CSV</button>
+    </div>
+
+    <!-- CSV to JSON -->
+    <div class="tab-panel active" id="panel-csv2json">
+      <div class="tool-two-col">
+        <div class="tool-input-wrap">
+          <div class="tool-input-toolbar">
+            <span class="toolbar-label mono">CSV Input</span>
+            <button class="toolbar-btn" id="csv-paste">Paste</button>
+            <button class="toolbar-btn" id="csv-sample">Sample</button>
+            <button class="toolbar-btn" id="csv-clear">Clear</button>
+          </div>
+          <textarea id="csv-input" class="tool-textarea" style="font-family:var(--font-mono);font-size:0.82rem;" placeholder="name,age,city&#10;Aayush,20,India&#10;Alice,25,USA"></textarea>
+        </div>
+        <div class="tool-input-wrap">
+          <div class="tool-input-toolbar">
+            <span class="toolbar-label mono">JSON Output</span>
+            <button class="toolbar-btn" id="csv-copy">Copy</button>
+            <button class="toolbar-btn" id="csv-download">Download</button>
+          </div>
+          <textarea id="csv-output" class="tool-textarea" readonly style="font-family:var(--font-mono);font-size:0.82rem;" placeholder="JSON will appear here..."></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+        <label class="checkbox-item"><input type="checkbox" id="csv-header" checked> First row is header</label>
+        <label class="checkbox-item"><input type="checkbox" id="csv-trim" checked> Trim whitespace</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:0.82rem;color:var(--text2);">Delimiter:</span>
+          <select class="tool-select" id="csv-delim" style="padding:5px 10px;">
+            <option value=",">Comma (,)</option>
+            <option value=";">Semicolon (;)</option>
+            <option value="	">Tab</option>
+            <option value="|">Pipe (|)</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:0.82rem;color:var(--text2);">Format:</span>
+          <select class="tool-select" id="json-format" style="padding:5px 10px;">
+            <option value="array">Array of objects</option>
+            <option value="compact">Compact (minified)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-csv2json" style="padding:10px 28px;">Convert →</button>
+      </div>
+      <div id="csv-status" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- JSON to CSV -->
+    <div class="tab-panel" id="panel-json2csv">
+      <div class="tool-two-col">
+        <div class="tool-input-wrap">
+          <div class="tool-input-toolbar">
+            <span class="toolbar-label mono">JSON Input</span>
+            <button class="toolbar-btn" id="json-paste">Paste</button>
+            <button class="toolbar-btn" id="json-sample">Sample</button>
+            <button class="toolbar-btn" id="json-clear">Clear</button>
+          </div>
+          <textarea id="json-input" class="tool-textarea" style="font-family:var(--font-mono);font-size:0.82rem;" placeholder='[{"name":"Aayush","age":20}]'></textarea>
+        </div>
+        <div class="tool-input-wrap">
+          <div class="tool-input-toolbar">
+            <span class="toolbar-label mono">CSV Output</span>
+            <button class="toolbar-btn" id="json-copy">Copy</button>
+            <button class="toolbar-btn" id="json-download">Download</button>
+          </div>
+          <textarea id="json-output" class="tool-textarea" readonly style="font-family:var(--font-mono);font-size:0.82rem;" placeholder="CSV will appear here..."></textarea>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn-primary" id="btn-json2csv" style="padding:10px 28px;">Convert →</button>
+      </div>
+      <div id="json-status" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- Preview table -->
+    <div id="preview-wrap" style="display:none;margin-top:20px;">
+      <div class="tool-section-card">
+        <div class="tsc-header"><span class="mono" style="font-size:0.72rem;letter-spacing:0.15em;color:var(--text3);">TABLE PREVIEW</span></div>
+        <div style="overflow-x:auto;" id="preview-table"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+const CSV_SAMPLE = `name,age,city,score
+Aayush,20,India,95
+Alice,25,USA,88
+Bob,30,UK,72
+Charlie,22,Canada,91`;
+
+const JSON_SAMPLE = `[
+  {"name":"Aayush","age":20,"city":"India","score":95},
+  {"name":"Alice","age":25,"city":"USA","score":88},
+  {"name":"Bob","age":30,"city":"UK","score":72}
+]`;
+
+// ── CSV → JSON ────────────────────────────────────────────────
+function csvToJson(csv, delim=',', hasHeader=true, trim=true) {
+  const lines = csv.split('\n').filter(l=>l.trim());
+  if (!lines.length) throw new Error('Empty input');
+  const process = v => trim ? v.trim().replace(/^["']|["']$/g,'') : v;
+  const headers = hasHeader ? lines[0].split(delim).map(process) : lines[0].split(delim).map((_,i)=>`col${i+1}`);
+  const start   = hasHeader ? 1 : 0;
+  return lines.slice(start).map(line => {
+    const vals = line.split(delim).map(process);
+    const obj  = {};
+    headers.forEach((h,i) => {
+      const v = vals[i] ?? '';
+      obj[h] = isNaN(v) || v==='' ? v : Number(v);
+    });
+    return obj;
+  });
+}
+
+// ── JSON → CSV ────────────────────────────────────────────────
+function jsonToCsv(json) {
+  const data = typeof json === 'string' ? JSON.parse(json) : json;
+  if (!Array.isArray(data) || !data.length) throw new Error('Input must be a non-empty JSON array');
+  const headers = [...new Set(data.flatMap(obj=>Object.keys(obj)))];
+  const escape  = v => { const s=String(v??''); return s.includes(',')||s.includes('"')||s.includes('\n')?`"${s.replace(/"/g,'""')}"`:s; };
+  return [headers.join(','), ...data.map(row=>headers.map(h=>escape(row[h]??'')).join(','))].join('\n');
+}
+
+// ── Render table preview ──────────────────────────────────────
+function renderTable(data) {
+  if (!data.length) return;
+  const headers = Object.keys(data[0]);
+  const preview = data.slice(0,10);
+  document.getElementById('preview-table').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+      <thead><tr>${headers.map(h=>`<th style="padding:8px 12px;text-align:left;background:var(--bg3);border:1px solid var(--border);color:var(--gold);font-family:var(--font-mono);font-size:0.72rem;">${h}</th>`).join('')}</tr></thead>
+      <tbody>${preview.map((row,i)=>`<tr>${headers.map(h=>`<td style="padding:6px 12px;border:1px solid var(--border);color:var(--text2);">${row[h]??''}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+    ${data.length>10?`<p style="font-size:0.75rem;color:var(--text3);margin-top:8px;">Showing 10 of ${data.length} rows</p>`:''}`;
+  document.getElementById('preview-wrap').style.display='block';
+}
+
+// ── Convert CSV → JSON ────────────────────────────────────────
+document.getElementById('btn-csv2json').addEventListener('click', () => {
+  try {
+    const csv   = document.getElementById('csv-input').value;
+    const delim = document.getElementById('csv-delim').value;
+    const hasH  = document.getElementById('csv-header').checked;
+    const trim  = document.getElementById('csv-trim').checked;
+    const fmt   = document.getElementById('json-format').value;
+    const data  = csvToJson(csv, delim, hasH, trim);
+    const out   = fmt==='compact' ? JSON.stringify(data) : JSON.stringify(data, null, 2);
+    document.getElementById('csv-output').value = out;
+    document.getElementById('csv-status').innerHTML = `<span class="result-badge success">✓ Converted ${data.length} rows</span>`;
+    renderTable(data);
+  } catch(e) {
+    document.getElementById('csv-status').innerHTML = `<span class="result-badge warn">✗ ${e.message}</span>`;
+  }
+});
+
+// ── Convert JSON → CSV ────────────────────────────────────────
+document.getElementById('btn-json2csv').addEventListener('click', () => {
+  try {
+    const json = document.getElementById('json-input').value;
+    const csv  = jsonToCsv(json);
+    document.getElementById('json-output').value = csv;
+    const count = csv.split('\n').length - 1;
+    document.getElementById('json-status').innerHTML = `<span class="result-badge success">✓ Converted ${count} rows</span>`;
+    try { renderTable(csvToJson(csv)); } catch(e){}
+  } catch(e) {
+    document.getElementById('json-status').innerHTML = `<span class="result-badge warn">✗ ${e.message}</span>`;
+  }
+});
+
+// ── Buttons ───────────────────────────────────────────────────
+document.getElementById('csv-paste').addEventListener('click', async()=>{ document.getElementById('csv-input').value=await navigator.clipboard.readText(); });
+document.getElementById('csv-sample').addEventListener('click', ()=>{ document.getElementById('csv-input').value=CSV_SAMPLE; });
+document.getElementById('csv-clear').addEventListener('click', ()=>{ document.getElementById('csv-input').value=''; document.getElementById('csv-output').value=''; document.getElementById('preview-wrap').style.display='none'; document.getElementById('csv-status').innerHTML=''; });
+document.getElementById('csv-copy').addEventListener('click', ()=>navigator.clipboard.writeText(document.getElementById('csv-output').value));
+document.getElementById('csv-download').addEventListener('click', ()=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([document.getElementById('csv-output').value],{type:'application/json'})); a.download='converted.json'; a.click(); });
+
+document.getElementById('json-paste').addEventListener('click', async()=>{ document.getElementById('json-input').value=await navigator.clipboard.readText(); });
+document.getElementById('json-sample').addEventListener('click', ()=>{ document.getElementById('json-input').value=JSON_SAMPLE; });
+document.getElementById('json-clear').addEventListener('click', ()=>{ document.getElementById('json-input').value=''; document.getElementById('json-output').value=''; document.getElementById('preview-wrap').style.display='none'; document.getElementById('json-status').innerHTML=''; });
+document.getElementById('json-copy').addEventListener('click', ()=>navigator.clipboard.writeText(document.getElementById('json-output').value));
+document.getElementById('json-download').addEventListener('click', ()=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([document.getElementById('json-output').value],{type:'text/csv'})); a.download='converted.csv'; a.click(); });
+</script>
+</body>
+</html>

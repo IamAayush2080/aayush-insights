@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Tracker — Aayush Insights</title>
+  <meta name="description" content="Track your expenses and income. Free, saves in your browser." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/theme.css" />
+  <link rel="stylesheet" href="tools.css" />
+  <link rel="stylesheet" href="tool-page.css" />
+  <style>
+    .exp-layout { display:grid; grid-template-columns:340px 1fr; gap:20px; align-items:start; }
+    @media(max-width:760px){ .exp-layout{ grid-template-columns:1fr; } }
+
+    .exp-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; }
+    .exp-card-header { padding:16px 20px; border-bottom:1px solid var(--border); background:var(--bg3); }
+
+    .summary-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:20px; }
+    .summary-box { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r-md); padding:14px; text-align:center; }
+    .summary-num { font-family:var(--font-disp); font-size:1.4rem; font-weight:700; line-height:1; margin-bottom:4px; }
+    .summary-label { font-size:0.68rem; color:var(--text3); font-family:var(--font-mono); letter-spacing:0.1em; text-transform:uppercase; }
+
+    .tx-item { display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid var(--border); transition:var(--transition); }
+    .tx-item:hover { background:var(--bg3); }
+    .tx-cat-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .tx-name { font-size:0.88rem; color:var(--text); flex:1; }
+    .tx-date { font-size:0.72rem; color:var(--text3); font-family:var(--font-mono); }
+    .tx-amount { font-family:var(--font-mono); font-size:0.9rem; font-weight:600; flex-shrink:0; }
+    .tx-delete { color:var(--text3); font-size:0.75rem; padding:2px 6px; border:1px solid var(--border); border-radius:4px; background:none; cursor:pointer; opacity:0; transition:var(--transition); }
+    .tx-item:hover .tx-delete { opacity:1; }
+
+    .cat-bar { display:flex; flex-direction:column; gap:8px; }
+    .cat-bar-item { display:flex; align-items:center; gap:10px; font-size:0.82rem; }
+    .cat-bar-fill { height:8px; border-radius:4px; transition:width 0.6s ease; }
+    .cat-bar-label { min-width:100px; color:var(--text2); }
+    .cat-bar-pct { font-family:var(--font-mono); font-size:0.72rem; color:var(--text3); margin-left:auto; }
+
+    .form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media(max-width:480px){ .form-row-2{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← All Tools</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav"></div>
+
+<div class="tool-page" style="max-width:1060px;">
+  <div class="tool-page-header">
+    <a href="index.html" class="tool-back">← Back to Tools</a>
+    <div class="tool-page-icon">💰</div>
+    <h1 class="tool-page-title">Expense Tracker</h1>
+    <p class="tool-page-desc">Track income and expenses. Saved in your browser — private, no account needed.</p>
+  </div>
+
+  <div class="tool-page-body">
+
+    <!-- Summary -->
+    <div class="summary-grid">
+      <div class="summary-box">
+        <div class="summary-num" style="color:#4ade80;" id="sum-income">₹0</div>
+        <div class="summary-label">Income</div>
+      </div>
+      <div class="summary-box">
+        <div class="summary-num" style="color:#f87171;" id="sum-expense">₹0</div>
+        <div class="summary-label">Expenses</div>
+      </div>
+      <div class="summary-box">
+        <div class="summary-num" id="sum-balance">₹0</div>
+        <div class="summary-label">Balance</div>
+      </div>
+    </div>
+
+    <div class="exp-layout">
+
+      <!-- Left: Add transaction + category breakdown -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- Add form -->
+        <div class="exp-card">
+          <div class="exp-card-header">
+            <p style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;">✦ ADD TRANSACTION</p>
+          </div>
+          <div style="padding:16px;">
+
+            <!-- Type toggle -->
+            <div style="display:flex;gap:8px;margin-bottom:14px;">
+              <button class="filter-btn active" id="type-expense" onclick="setType('expense')">− Expense</button>
+              <button class="filter-btn" id="type-income" onclick="setType('income')">+ Income</button>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);display:block;margin-bottom:5px;">DESCRIPTION</label>
+                <input type="text" id="tx-name" class="tool-input" style="width:100%;" placeholder="e.g. Lunch, Salary, Netflix..." maxlength="50" />
+              </div>
+              <div class="form-row-2">
+                <div>
+                  <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);display:block;margin-bottom:5px;">AMOUNT (₹)</label>
+                  <input type="number" id="tx-amount" class="tool-input" style="width:100%;" placeholder="0.00" min="0" step="0.01" />
+                </div>
+                <div>
+                  <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);display:block;margin-bottom:5px;">CATEGORY</label>
+                  <select class="tool-select" id="tx-cat" style="width:100%;">
+                    <option value="Food">🍔 Food</option>
+                    <option value="Transport">🚗 Transport</option>
+                    <option value="Shopping">🛍️ Shopping</option>
+                    <option value="Entertainment">🎬 Entertainment</option>
+                    <option value="Health">💊 Health</option>
+                    <option value="Education">📚 Education</option>
+                    <option value="Bills">💡 Bills</option>
+                    <option value="Salary">💼 Salary</option>
+                    <option value="Other">📦 Other</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);display:block;margin-bottom:5px;">DATE</label>
+                <input type="date" id="tx-date" class="tool-input" style="width:100%;" />
+              </div>
+              <button class="btn-primary" id="btn-add-tx" style="width:100%;padding:10px;justify-content:center;">Add Transaction</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category breakdown -->
+        <div class="exp-card">
+          <div class="exp-card-header">
+            <p style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.12em;">BY CATEGORY</p>
+          </div>
+          <div style="padding:16px;" id="cat-breakdown">
+            <p style="font-size:0.85rem;color:var(--text3);text-align:center;padding:16px 0;">No data yet</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Transaction list -->
+      <div class="exp-card">
+        <div class="exp-card-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          <p style="font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:0.12em;">TRANSACTIONS (<span id="tx-count">0</span>)</p>
+          <div style="display:flex;gap:8px;">
+            <select class="tool-select" id="filter-cat" style="font-size:0.78rem;padding:4px 10px;">
+              <option value="all">All categories</option>
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Health">Health</option>
+              <option value="Education">Education</option>
+              <option value="Bills">Bills</option>
+              <option value="Salary">Salary</option>
+              <option value="Other">Other</option>
+            </select>
+            <button class="toolbar-btn" id="btn-export" style="font-size:0.75rem;padding:4px 10px;">Export CSV</button>
+            <button class="toolbar-btn" id="btn-clear-all" style="font-size:0.75rem;padding:4px 10px;color:#f87171;border-color:rgba(248,113,113,0.3);">Clear</button>
+          </div>
+        </div>
+        <div id="tx-list" style="max-height:500px;overflow-y:auto;">
+          <div style="padding:40px;text-align:center;color:var(--text3);">
+            <div style="font-size:2.5rem;margin-bottom:12px;">💰</div>
+            <p>No transactions yet. Add your first one!</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/nav.js"></script>
+<script>
+let transactions = JSON.parse(localStorage.getItem('ai-expenses') || '[]');
+let txType = 'expense';
+
+const CAT_COLORS = {
+  Food:'#f97316', Transport:'#60a5fa', Shopping:'#a78bfa',
+  Entertainment:'#f472b6', Health:'#4ade80', Education:'#fbbf24',
+  Bills:'#f87171', Salary:'#34d399', Other:'#94a3b8'
+};
+
+// Set today as default date
+document.getElementById('tx-date').value = new Date().toISOString().split('T')[0];
+
+function save() { localStorage.setItem('ai-expenses', JSON.stringify(transactions)); }
+
+function setType(type) {
+  txType = type;
+  document.getElementById('type-expense').classList.toggle('active', type==='expense');
+  document.getElementById('type-income').classList.toggle('active', type==='income');
+}
+
+function fmt(n) { return '₹' + Math.abs(n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function renderSummary() {
+  const income  = transactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount, 0);
+  const expense = transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount, 0);
+  const balance = income - expense;
+  document.getElementById('sum-income').textContent  = fmt(income);
+  document.getElementById('sum-expense').textContent = fmt(expense);
+  const balEl = document.getElementById('sum-balance');
+  balEl.textContent = fmt(balance);
+  balEl.style.color = balance >= 0 ? '#4ade80' : '#f87171';
+}
+
+function renderCats() {
+  const expenses = transactions.filter(t=>t.type==='expense');
+  const total = expenses.reduce((s,t)=>s+t.amount,0);
+  const cats = {};
+  expenses.forEach(t => cats[t.cat] = (cats[t.cat]||0) + t.amount);
+  const sorted = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const el = document.getElementById('cat-breakdown');
+  if (!sorted.length) { el.innerHTML='<p style="font-size:0.85rem;color:var(--text3);text-align:center;padding:16px 0;">No expenses yet</p>'; return; }
+  el.innerHTML = `<div class="cat-bar">${sorted.map(([cat,amt])=>`
+    <div class="cat-bar-item">
+      <div style="width:10px;height:10px;border-radius:50%;background:${CAT_COLORS[cat]||'#94a3b8'};flex-shrink:0;"></div>
+      <span class="cat-bar-label">${cat}</span>
+      <div style="flex:1;background:var(--bg3);border-radius:4px;overflow:hidden;height:8px;">
+        <div class="cat-bar-fill" style="width:${total?((amt/total)*100).toFixed(1):0}%;background:${CAT_COLORS[cat]||'#94a3b8'};"></div>
+      </div>
+      <span class="cat-bar-pct">${fmt(amt)}</span>
+    </div>`).join('')}</div>`;
+}
+
+function renderList() {
+  const filterCat = document.getElementById('filter-cat').value;
+  const list = document.getElementById('tx-list');
+  const filtered = [...transactions]
+    .filter(t => filterCat==='all' || t.cat===filterCat)
+    .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  document.getElementById('tx-count').textContent = transactions.length;
+
+  if (!filtered.length) {
+    list.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text3);"><div style="font-size:2.5rem;margin-bottom:12px;">💰</div><p>No transactions yet</p></div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(t => `
+    <div class="tx-item">
+      <div class="tx-cat-dot" style="background:${CAT_COLORS[t.cat]||'#94a3b8'};"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="tx-name">${t.name}</div>
+        <div style="display:flex;gap:8px;">
+          <span class="tx-date">${t.date}</span>
+          <span style="font-size:0.68rem;color:var(--text3);background:var(--bg3);padding:1px 6px;border-radius:99px;">${t.cat}</span>
+        </div>
+      </div>
+      <div class="tx-amount" style="color:${t.type==='income'?'#4ade80':'#f87171'};">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+      <button class="tx-delete" onclick="deleteTx('${t.id}')">✕</button>
+    </div>`).join('');
+}
+
+function render() { renderSummary(); renderCats(); renderList(); }
+
+function deleteTx(id) {
+  transactions = transactions.filter(t=>t.id!==id);
+  save(); render();
+}
+
+document.getElementById('btn-add-tx').addEventListener('click', () => {
+  const name   = document.getElementById('tx-name').value.trim();
+  const amount = parseFloat(document.getElementById('tx-amount').value);
+  const cat    = document.getElementById('tx-cat').value;
+  const date   = document.getElementById('tx-date').value;
+  if (!name || !amount || !date) return;
+  transactions.push({ id:Date.now().toString(), name, amount, cat, date, type:txType });
+  save();
+  document.getElementById('tx-name').value = '';
+  document.getElementById('tx-amount').value = '';
+  render();
+});
+
+document.getElementById('tx-name').addEventListener('keydown', e => {
+  if (e.key==='Enter') document.getElementById('btn-add-tx').click();
+});
+
+document.getElementById('filter-cat').addEventListener('change', renderList);
+
+document.getElementById('btn-clear-all').addEventListener('click', () => {
+  if (!transactions.length || !confirm('Delete all transactions?')) return;
+  transactions=[]; save(); render();
+});
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  const rows = [['Date','Name','Category','Type','Amount']];
+  [...transactions].sort((a,b)=>new Date(b.date)-new Date(a.date))
+    .forEach(t => rows.push([t.date, t.name, t.cat, t.type, t.amount]));
+  const csv = rows.map(r=>r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = 'expenses.csv'; a.click();
+});
+
+render();
+</script>
+</body>
+</html>

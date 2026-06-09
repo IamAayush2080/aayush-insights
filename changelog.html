@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog — Aayush Insights</title>
+  <meta name="description" content="What's new on Aayush Insights — public log of updates, new tools and improvements." />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
+  <style>
+    .changelog-page { max-width:760px; margin:0 auto; padding:120px 5% 80px; }
+    .cl-item { display:grid; grid-template-columns:120px 1fr; gap:24px; margin-bottom:48px; }
+    @media(max-width:560px){ .cl-item{ grid-template-columns:1fr; gap:8px; } }
+    .cl-date {
+      font-family:var(--font-mono); font-size:0.75rem;
+      color:var(--text3); letter-spacing:0.08em;
+      padding-top:6px; text-align:right;
+    }
+    @media(max-width:560px){ .cl-date{ text-align:left; } }
+    .cl-body { border-left:2px solid var(--border); padding-left:24px; position:relative; }
+    .cl-body::before {
+      content:''; position:absolute; left:-7px; top:8px;
+      width:12px; height:12px; border-radius:50%;
+      background:var(--gold); border:2px solid var(--bg);
+    }
+    .cl-version {
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:var(--font-mono); font-size:0.72rem;
+      letter-spacing:0.15em; color:var(--gold);
+      background:var(--gold-dim); padding:3px 10px;
+      border-radius:99px; margin-bottom:10px;
+    }
+    .cl-title { font-family:var(--font-disp); font-size:1.2rem; font-weight:700; color:var(--text); margin-bottom:10px; }
+    .cl-list { list-style:none; padding:0; display:flex; flex-direction:column; gap:6px; }
+    .cl-list li { font-size:0.88rem; color:var(--text2); line-height:1.6; display:flex; gap:10px; }
+    .cl-tag {
+      display:inline-block; font-size:0.65rem; font-family:var(--font-mono);
+      letter-spacing:0.08em; text-transform:uppercase;
+      padding:1px 7px; border-radius:99px; flex-shrink:0; margin-top:2px;
+    }
+    .tag-new     { background:rgba(74,222,128,0.12); color:#4ade80; }
+    .tag-fix     { background:rgba(251,191,36,0.12); color:#fbbf24; }
+    .tag-improve { background:rgba(96,165,250,0.12); color:#60a5fa; }
+    .tag-remove  { background:rgba(248,113,113,0.12); color:#f87171; }
+  </style>
+</head>
+<body>
+<nav id="navbar">
+  <a href="index.html" class="nav-logo"><span class="nav-logo-text">Aayush Insights</span><span class="nav-logo-num">#7539</span></a>
+  <ul class="nav-links"></ul>
+  <button id="theme-toggle" title="Toggle theme">☀️</button>
+  <a href="index.html" class="nav-cta">← Home</a>
+  <button class="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div id="mobile-nav"></div>
+
+<div class="changelog-page">
+  <p class="section-eyebrow mono">✦ What's new · #7539</p>
+  <h1 style="font-family:var(--font-disp);font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1.05;margin:12px 0 12px;">
+    Change<em style="color:var(--gold);font-style:italic;">log</em>
+  </h1>
+  <p style="font-size:0.95rem;color:var(--text2);margin-bottom:56px;line-height:1.7;">
+    A public record of what's been built, fixed and improved. Updated whenever something changes.
+  </p>
+
+  <!-- v3.0 -->
+  <div class="cl-item">
+    <div class="cl-date">2024<br/>Latest</div>
+    <div class="cl-body">
+      <div class="cl-version">v3.0 — Major Update</div>
+      <div class="cl-title">Complete Integration & New Features</div>
+      <ul class="cl-list">
+        <li><span class="cl-tag tag-new">New</span>Global Search — find tools, articles and thoughts in one place</li>
+        <li><span class="cl-tag tag-new">New</span>Habit Tracker — track daily habits with streaks, saved in browser</li>
+        <li><span class="cl-tag tag-new">New</span>Expense Tracker — track income and expenses with CSV export</li>
+        <li><span class="cl-tag tag-new">New</span>CSV ↔ JSON Converter — convert between formats with table preview</li>
+        <li><span class="cl-tag tag-new">New</span>Epoch Timestamp Converter — live clock + Unix timestamp tools</li>
+        <li><span class="cl-tag tag-new">New</span>About page — full story, timeline, interests and values</li>
+        <li><span class="cl-tag tag-new">New</span>Changelog page — this page!</li>
+        <li><span class="cl-tag tag-new">New</span>PWA support — site can now be installed as an app</li>
+        <li><span class="cl-tag tag-new">New</span>Service worker — offline support for core pages</li>
+        <li><span class="cl-tag tag-improve">Improve</span>Navigation fully connected — all pages linked everywhere</li>
+        <li><span class="cl-tag tag-improve">Improve</span>Back to top button added on all pages via nav.js</li>
+        <li><span class="cl-tag tag-fix">Fix</span>Blog index — Universe article now clickable and shows LIVE badge</li>
+        <li><span class="cl-tag tag-fix">Fix</span>Contact page — full CSS applied, looks clean on all pages</li>
+        <li><span class="cl-tag tag-fix">Fix</span>Dark mode toggle now works on every single page</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- v2.0 -->
+  <div class="cl-item">
+    <div class="cl-date">2024<br/>Mid</div>
+    <div class="cl-body">
+      <div class="cl-version">v2.0 — Tools Expansion</div>
+      <div class="cl-title">45+ Tools, New Pages & SEO</div>
+      <ul class="cl-list">
+        <li><span class="cl-tag tag-new">New</span>Scientific Calculator with keyboard support and history</li>
+        <li><span class="cl-tag tag-new">New</span>BMI Calculator with visual scale</li>
+        <li><span class="cl-tag tag-new">New</span>Loan Comparison — compare 3 loans side by side</li>
+        <li><span class="cl-tag tag-new">New</span>Typing Speed Test — WPM and accuracy tracking</li>
+        <li><span class="cl-tag tag-new">New</span>Grammar Checker — style and grammar suggestions</li>
+        <li><span class="cl-tag tag-new">New</span>Projects page — showcase of things built</li>
+        <li><span class="cl-tag tag-new">New</span>Reading List — books and resources</li>
+        <li><span class="cl-tag tag-new">New</span>Privacy Policy and Terms pages</li>
+        <li><span class="cl-tag tag-new">New</span>sitemap.xml and robots.txt for SEO</li>
+        <li><span class="cl-tag tag-improve">Improve</span>Dark/light mode toggle added across all pages</li>
+        <li><span class="cl-tag tag-improve">Improve</span>Footer updated with full site link grid</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- v1.0 -->
+  <div class="cl-item">
+    <div class="cl-date">2024<br/>Start</div>
+    <div class="cl-body">
+      <div class="cl-version">v1.0 — Launch</div>
+      <div class="cl-title">Initial Launch on GitHub Pages</div>
+      <ul class="cl-list">
+        <li><span class="cl-tag tag-new">New</span>Homepage with hero section, photo and stats</li>
+        <li><span class="cl-tag tag-new">New</span>Two-tab layout — Tools Hub and Writings</li>
+        <li><span class="cl-tag tag-new">New</span>25+ browser-based free tools</li>
+        <li><span class="cl-tag tag-new">New</span>Blog / Writings page with article cards</li>
+        <li><span class="cl-tag tag-new">New</span>Thoughts page with 10 entries</li>
+        <li><span class="cl-tag tag-new">New</span>Contact page with Formspree integration</li>
+        <li><span class="cl-tag tag-new">New</span>404 custom error page</li>
+        <li><span class="cl-tag tag-new">New</span>Design system — dark theme, gold accent, #7539</li>
+        <li><span class="cl-tag tag-new">New</span>First article: The Universe Started From Nothing</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- What's coming -->
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;margin-top:20px;">
+    <p style="font-size:0.72rem;color:var(--gold);font-family:var(--font-mono);letter-spacing:0.15em;margin-bottom:10px;">✦ COMING NEXT</p>
+    <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;">
+      <li style="font-size:0.88rem;color:var(--text2);">→ Custom domain (aayush-insights.is-a.dev)</li>
+      <li style="font-size:0.88rem;color:var(--text2);">→ More blog articles by Aayush</li>
+      <li style="font-size:0.88rem;color:var(--text2);">→ Tool ratings — thumbs up/down</li>
+      <li style="font-size:0.88rem;color:var(--text2);">→ Google Search Console setup</li>
+      <li style="font-size:0.88rem;color:var(--text2);">→ More tools based on user suggestions</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:40px 5%;max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+  <a href="index.html" style="font-family:var(--font-disp);font-size:1rem;font-weight:700;color:var(--text2);text-decoration:none;">Aayush Insights</a>
+  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2024 · Aayush Kurmi · #7539</span>
+  <a href="contact.html" style="font-size:0.78rem;color:var(--text3);text-decoration:none;">Contact</a>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/nav.js"></script>
+</body>
+</html>
