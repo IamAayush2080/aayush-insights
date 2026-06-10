@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </button>
         <div class="nav-dd-menu">
           <div class="nav-dd-label">Read</div>
-          <a href="${root}blog/index.html" ${isBlog?'class="active"':''}>📖 Articles &amp; Research</a>
+          <a href="${root}blog/index.html" ${isBlog?'class="active"':''}>📖 Personal Research &amp; Articles</a>
           <a href="${root}thoughts/index.html" ${isThoughts?'class="active"':''}>💭 Thoughts &amp; Opinions</a>
           <div class="nav-dd-divider"></div>
           <div class="nav-dd-label">Resources</div>
