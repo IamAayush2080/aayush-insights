@@ -1,20 +1,35 @@
-/* ── Dark / Light mode toggle ──────────────────────────────── */
+/* ── Theme System — applies instantly before render ────────── */
+
+// Apply saved theme IMMEDIATELY (before DOMContentLoaded)
+// This prevents flash of wrong theme on mobile
 (function() {
   const saved = localStorage.getItem('aayush-theme');
-  if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  if (saved === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
 })();
 
-function initThemeToggle() {
-  const btn = document.getElementById('theme-toggle');
-  if (!btn) return;
-  const current = document.documentElement.getAttribute('data-theme');
-  btn.textContent = current === 'light' ? '🌙' : '☀️';
-  btn.addEventListener('click', () => {
+// Init toggle button after DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+  function initToggle() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    document.documentElement.setAttribute('data-theme', isLight ? '' : 'light');
-    localStorage.setItem('aayush-theme', isLight ? 'dark' : 'light');
-    btn.textContent = isLight ? '☀️' : '🌙';
-  });
-}
-
-document.addEventListener('DOMContentLoaded', initThemeToggle);
+    btn.textContent = isLight ? '🌙' : '☀️';
+    btn.addEventListener('click', function() {
+      const nowLight = document.documentElement.getAttribute('data-theme') === 'light';
+      if (nowLight) {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('aayush-theme', 'dark');
+        btn.textContent = '☀️';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('aayush-theme', 'light');
+        btn.textContent = '🌙';
+      }
+    });
+  }
+  initToggle();
+  // Also try again after nav.js injects the button
+  setTimeout(initToggle, 200);
+});
