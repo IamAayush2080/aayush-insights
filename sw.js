@@ -1,6 +1,8 @@
+/* ── Aayush Insights Service Worker ───────────────────────────
+   Caches core assets for offline use
+   Cache version: bump this when you deploy updates         */
 
-
-const CACHE_NAME = 'aayush-insights-v1';
+const CACHE_NAME = 'aayush-insights-v3';
 
 const CORE_ASSETS = [
   '/',

@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const style = document.createElement('style');
   style.textContent = `
     .nav-links { display:flex; align-items:center; gap:2px; list-style:none; }
+    @media (max-width: 768px) { .nav-links { display:none !important; } .hamburger { display:flex !important; } }
     .nav-links > li { position:relative; }
     .nav-links a, .nav-dd-btn {
       font-size:0.83rem; font-weight:400; color:var(--text2);
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </button>
         <div class="nav-dd-menu">
           <div class="nav-dd-label">Read</div>
-          <a href="${root}blog/index.html" ${isBlog?'class="active"':''}>📖Personal Research  &amp; Articles </a>
+          <a href="${root}blog/index.html" ${isBlog?'class="active"':''}>📖 Articles &amp; Research</a>
           <a href="${root}thoughts/index.html" ${isThoughts?'class="active"':''}>💭 Thoughts &amp; Opinions</a>
           <div class="nav-dd-divider"></div>
           <div class="nav-dd-label">Resources</div>
