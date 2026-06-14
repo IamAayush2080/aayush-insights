@@ -70,6 +70,12 @@
     mark { background:var(--gold-dim); color:var(--gold-lt); border-radius:2px; padding:0 2px; }
     .empty-state { text-align:center; padding:60px 0; color:var(--text3); }
   </style>
+  <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f5f3ef" media="(prefers-color-scheme: light)" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="format-detection" content="telephone=no" />
 </head>
 <body>
 <nav id="navbar">
@@ -116,7 +122,7 @@
 
 <footer style="border-top:1px solid var(--border);padding:40px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;max-width:760px;margin:0 auto;">
   <a href="index.html" style="font-family:var(--font-disp);font-size:1rem;font-weight:700;color:var(--text2);text-decoration:none;">Aayush Insights</a>
-  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2026 · #7539</span>
+  <span style="font-size:0.78rem;color:var(--text3);font-family:var(--font-mono);">© 2024 · #7539</span>
 </footer>
 
 <script src="assets/js/main.js"></script>
@@ -174,6 +180,7 @@ const SITE_INDEX = [
   {type:'tools', icon:'✅', name:'Habit Tracker', desc:'Track daily habits and streaks, saved in browser', url:'tools/habit-tracker.html', cat:'Productivity'},
 
   // ARTICLES
+  {type:'articles', icon:'🧊', name:'The Dimensional Containment Hypothesis', desc:'Are we 3D beings trapped in a higher-dimensional structure? String theory, holography, Gödel and quantum consciousness explored.', url:'blog/dimensional-containment.html', cat:'Deep Research'},
   {type:'articles', icon:'🌌', name:'The Universe Started From Nothing', desc:'13.8 billion years, a singularity, and why it should change how you see everything', url:'blog/universe-singularity.html', cat:'Crazy Thoughts'},
   {type:'articles', icon:'🔐', name:'Why Cybersecurity Matters This Decade', desc:'Every system, every person is a target — coming soon', url:'blog/index.html', cat:'Research'},
   {type:'articles', icon:'🧠', name:'Social Media Is Designed to Make You Feel Small', desc:'My honest opinion on algorithms — coming soon', url:'blog/index.html', cat:'Opinion'},
